@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
+import 'screens/rolodex_screen.dart';
 
-void main() {
-  runApp(const MainApp());
-}
+void main() => runApp(const RolodexApp());
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+class RolodexApp extends StatelessWidget {
+  const RolodexApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+    return MaterialApp(
+      title: 'Rolodex',
+      theme: ThemeData(primarySwatch: Colors.orange),
+      home: const RolodexScreen(),
     );
   }
 }
