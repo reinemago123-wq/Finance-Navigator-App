@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "158304390046",
+    "project_id": "rolodex-app-12539",
+    "storage_bucket": "rolodex-app-12539.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:158304390046:android:7ab8885c19d4d3af86648f",
+        "android_client_info": {
+          "package_name": "com.example.rolodex_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBP-JICTfYDHyv9jdRAcjNdPip-O62Vlx4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -17,10 +17,20 @@ class _ContactDialogState extends State<ContactDialog> {
   @override
   void initState() {
     super.initState();
+    // Pre-fills fields if editing an existing contact
     _fName = TextEditingController(text: widget.contact?.firstName);
     _lName = TextEditingController(text: widget.contact?.lastName);
     _mName = TextEditingController(text: widget.contact?.middleName);
     _phone = TextEditingController(text: widget.contact?.phoneNumber);
+  }
+
+  @override
+  void dispose() {
+    _fName.dispose();
+    _lName.dispose();
+    _mName.dispose();
+    _phone.dispose();
+    super.dispose();
   }
 
   @override
@@ -30,22 +40,40 @@ class _ContactDialogState extends State<ContactDialog> {
       content: SingleChildScrollView(
         child: Column(
           children: [
-            TextField(controller: _lName, decoration: const InputDecoration(hintText: "Last Name")),
-            TextField(controller: _fName, decoration: const InputDecoration(hintText: "First Name")),
-            TextField(controller: _mName, decoration: const InputDecoration(hintText: "Middle Name")),
-            TextField(controller: _phone, decoration: const InputDecoration(hintText: "Phone Number")),
+            TextField(
+              controller: _lName,
+              decoration: const InputDecoration(hintText: "Last Name"),
+            ),
+            TextField(
+              controller: _fName,
+              decoration: const InputDecoration(hintText: "First Name"),
+            ),
+            TextField(
+              controller: _mName,
+              decoration: const InputDecoration(hintText: "Middle Name"),
+            ),
+            TextField(
+              controller: _phone,
+              decoration: const InputDecoration(hintText: "Phone Number"),
+              keyboardType: TextInputType.phone,
+            ),
           ],
         ),
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(context), child: const Text("CANCEL")),
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text("CANCEL"),
+        ),
         ElevatedButton(
           onPressed: () {
+            // Passes back a Contact object — preserving the id if editing
             widget.onConfirm(Contact(
-              firstName: _fName.text,
-              lastName: _lName.text,
-              middleName: _mName.text,
-              phoneNumber: _phone.text,
+              id: widget.contact?.id, // ← keeps the Firestore doc ID for updates
+              firstName: _fName.text.trim(),
+              lastName: _lName.text.trim(),
+              middleName: _mName.text.trim(),
+              phoneNumber: _phone.text.trim(),
             ));
             Navigator.pop(context);
           },
