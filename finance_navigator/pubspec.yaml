@@ -12,6 +12,7 @@ dependencies:
 
   vector_math: ^2.2.0
   cupertino_icons: ^1.0.8
+  flutter_native_splash: ^2.4.7
 
 dev_dependencies:
   flutter_test:
@@ -28,6 +29,20 @@ flutter_icons:
   image_path: "assets/icon.png"
   active_icon_foreground: "#ffffff"
   active_icon_background: "assets/play_store_512.png"
+
+flutter_native_splash:
+  color: "#ffffff"
+  color_dark: "#272727"
+  image: assets/splash.png
+  image_dark: assets/splash_dark.png
+  
+  android_12:
+    color: "#ffffff"
+    color_dark: "#272727"
+    image: assets/splash.png
+    image_dark: assets/splash_dark.png
+
+  web: false
 
 flutter:
 
