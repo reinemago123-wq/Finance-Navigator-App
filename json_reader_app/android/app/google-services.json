@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "552221493739",
+    "project_id": "json-parser-app",
+    "storage_bucket": "json-parser-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:552221493739:android:b6da149c3cfe4a35e471ae",
+        "android_client_info": {
+          "package_name": "com.example.json_reader_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChrmMKFaeWPAJffgjpN3rpzhiYab44kyE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
