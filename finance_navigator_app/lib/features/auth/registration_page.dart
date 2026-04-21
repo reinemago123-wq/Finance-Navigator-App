@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../main_shell.dart';
 import '../../core/theme.dart';
 import '../../widgets/glass_card.dart';
+import '../services/auth_service.dart';
 
 
 class RegistrationPage extends StatefulWidget {
@@ -20,6 +21,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
   bool _showPassword = false;
   bool _showConfirmPassword = false;
   bool _agreeToTerms = false;
+  bool _loading = false;
+  String? _error;
 
   @override
   void initState() {
@@ -40,6 +43,40 @@ class _RegistrationPageState extends State<RegistrationPage> {
   }
 
   // ── Navigate to Home — clears entire stack ─────────────────────────────────
+  Future<void> _register() async {
+    final name     = _fullNameController.text.trim();
+    final email    = _emailController.text.trim();
+    final password = _passwordController.text;
+    final confirm  = _confirmPasswordController.text;
+
+    if (name.isEmpty || email.isEmpty || password.isEmpty) {
+      setState(() => _error = 'Please fill in all fields.');
+      return;
+    }
+    if (password != confirm) {
+      setState(() => _error = 'Passwords do not match.');
+      return;
+    }
+    if (!_agreeToTerms) {
+      setState(() => _error = 'Please agree to the Terms of Service.');
+      return;
+    }
+
+    setState(() { _loading = true; _error = null; });
+
+    final error = await AuthService.register(
+        fullName: name, email: email, password: password);
+
+    if (!mounted) return;
+    setState(() => _loading = false);
+
+    if (error != null) {
+      setState(() => _error = error);
+    } else {
+      _goToHome();
+    }
+  }
+
   void _goToHome() {
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (_) => const MainShell()),
@@ -176,6 +213,29 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       ),
                     ),
                     const SizedBox(height: Sp.xl),
+
+                    // ── Error banner ───────────────────────
+                    if (_error != null) ...[
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: Sp.md, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: AppColors.expense.withOpacity(0.12),
+                          border: Border.all(
+                              color: AppColors.expense.withOpacity(0.30)),
+                          borderRadius: BorderRadius.circular(Rd.md),
+                        ),
+                        child: Row(children: [
+                          const Icon(Icons.error_outline_rounded,
+                              color: AppColors.expense, size: 18),
+                          const SizedBox(width: 8),
+                          Expanded(child: Text(_error!,
+                              style: const TextStyle(
+                                  color: AppColors.expense, fontSize: 13))),
+                        ]),
+                      ),
+                      const SizedBox(height: Sp.md),
+                    ],
 
                     // ── Full Name ──────────────────────────
                     _fieldLabel('Full Name'),
@@ -316,7 +376,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     // ── Create Account button ──────────────
                     // FIX: was empty onTap — now navigates to HomePage
                     GestureDetector(
-                      onTap: _agreeToTerms ? _goToHome : null,
+                      onTap: (_agreeToTerms && !_loading) ? _register : null,
                       child: Container(
                         height: 56,
                         decoration: BoxDecoration(
@@ -342,7 +402,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               : [],
                         ),
                         child: Center(
-                          child: Text(
+                          child: _loading
+                              ? const SizedBox(
+                                  width: 22, height: 22,
+                                  child: CircularProgressIndicator(
+                                      color: AppColors.primaryDark,
+                                      strokeWidth: 2.5))
+                              : Text(
                             'Create Account',
                             style: TextStyle(
                               fontSize: 16,
@@ -425,6 +491,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               controller: controller,
               keyboardType: keyboardType,
               style: AppText.body.copyWith(color: AppColors.onDark),
+              onChanged: (_) { if (_error != null) setState(() => _error = null); },
               decoration: InputDecoration(
                 hintText: hintText,
                 hintStyle: AppText.body.copyWith(

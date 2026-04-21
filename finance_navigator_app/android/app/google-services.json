@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "331622051762",
+    "project_id": "finance-navigator-e10be",
+    "storage_bucket": "finance-navigator-e10be.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331622051762:android:5eb76e20cb0a1fbfc3beab",
+        "android_client_info": {
+          "package_name": "com.example.finance_navigator_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "331622051762-8ol734l50qa4jfq81kamp193q5g2b66u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHVKT56yGKHAN0fPiJOEDgFB4nd943lds"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "331622051762-8ol734l50qa4jfq81kamp193q5g2b66u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'features/onboarding/splash_screen.dart';
 import 'features/onboarding/onboarding_screen.dart';
 import 'features/auth/login_page.dart';
+import 'features/main_shell.dart';
 import 'core/theme.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-//  Root navigator key — gives us a stable handle to the navigator that never
-//  becomes stale, even after animations rebuild the widget tree.
-// ─────────────────────────────────────────────────────────────────────────────
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // ── Init Firebase ────────────────────────────────────────────────────────
+  await Firebase.initializeApp();
+
   SystemChrome.setPreferredOrientations(
     [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
   );
@@ -33,31 +36,39 @@ class FinanceNavigatorApp extends StatelessWidget {
     return MaterialApp(
       title: 'Finance Navigator',
       debugShowCheckedModeBanner: false,
-      // ── Attach the stable navigator key ──────────────────────────────────
       navigatorKey: navigatorKey,
       theme: ThemeData(
         useMaterial3: true,
         scaffoldBackgroundColor: AppColors.primaryDark,
       ),
-      home: SplashScreen(
-        // onComplete fires after the splash animation — by then the original
-        // BuildContext from build() is deactivated. We use navigatorKey instead.
-        onComplete: _goToOnboarding,
+      // ── Auth gate: show MainShell if logged in, otherwise onboarding ──────
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          // Still checking
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Scaffold(
+              backgroundColor: AppColors.primaryDark,
+              body: Center(
+                child: CircularProgressIndicator(color: AppColors.accent),
+              ),
+            );
+          }
+          // Already logged in — go straight to app
+          if (snapshot.hasData && snapshot.data != null) {
+            return const MainShell();
+          }
+          // Not logged in — show splash → onboarding → login
+          return SplashScreen(onComplete: _goToOnboarding);
+        },
       ),
     );
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-//  Navigation helpers — all use navigatorKey.currentState so they are
-//  completely decoupled from any BuildContext lifecycle.
-// ─────────────────────────────────────────────────────────────────────────────
-
 void _goToOnboarding() {
   navigatorKey.currentState?.pushReplacement(
-    _fadeRoute(
-      OnboardingScreen(onFinished: _goToLogin),
-    ),
+    _fadeRoute(OnboardingScreen(onFinished: _goToLogin)),
   );
 }
 
@@ -67,7 +78,6 @@ void _goToLogin() {
   );
 }
 
-/// Reusable smooth fade page transition
 PageRouteBuilder<void> _fadeRoute(Widget page) {
   return PageRouteBuilder(
     pageBuilder: (_, __, ___) => page,
