@@ -11,7 +11,7 @@ class _OnboardPage {
   final String tag;
   final String title;
   final String description;
-  final Color orbColor;
+  final Color orbColor; 
   final Widget illustration;
 
   const _OnboardPage({

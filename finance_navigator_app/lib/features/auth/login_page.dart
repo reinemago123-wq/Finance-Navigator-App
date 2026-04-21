@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import '../../core/theme.dart';
 import '../../widgets/glass_card.dart';
 import 'registration_page.dart';
-import '../dashboard/home_page.dart';
+import '../main_shell.dart';
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -34,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
   // ── Navigate to Home — replaces entire back-stack ──────────────────────────
   void _goToHome() {
     Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => const HomePage()),
+      MaterialPageRoute(builder: (_) => const MainShell()),
       (_) => false, // clear everything behind it
     );
   }

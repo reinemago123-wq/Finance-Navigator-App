@@ -65,6 +65,6 @@ class GlassCard extends StatelessWidget {
           child: child,
         ),
       ),
-    );
+    ); 
   }
 }

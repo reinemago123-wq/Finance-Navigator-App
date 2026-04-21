@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import '../main_shell.dart';
 import '../../core/theme.dart';
 import '../../widgets/glass_card.dart';
-import '../dashboard/home_page.dart';
+
 
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({super.key});
@@ -41,7 +42,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   // ── Navigate to Home — clears entire stack ─────────────────────────────────
   void _goToHome() {
     Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => const HomePage()),
+      MaterialPageRoute(builder: (_) => const MainShell()),
       (_) => false,
     );
   }
