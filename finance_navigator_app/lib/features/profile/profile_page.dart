@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../core/theme.dart';
 import '../../widgets/glass_card.dart';
+import '../services/user_service.dart';
 import '../auth/login_page.dart';
+import '../../main.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -10,38 +12,39 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  // User data — editable
-  String _name  = 'Alex Johnson';
-  String _email = 'alex@example.com';
+  String get _name  => UserService.displayName;
+  String get _email => UserService.email;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.primaryDark,
-      body: Stack(children: [
-        Positioned(
-          top: -60, left: -40,
-          child: Container(
-            width: 240, height: 240,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(colors: [
-                AppColors.accent.withOpacity(0.10), Colors.transparent]),
-            ),
+    return Stack(children: [
+      Positioned(
+        top: -60, left: -40,
+        child: Container(
+          width: 240, height: 240,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: RadialGradient(colors: [
+              AppColors.accent.withOpacity(0.10), Colors.transparent,
+            ]),
           ),
         ),
+      ),
 
-        SafeArea(
-          bottom: false,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(Sp.lg, Sp.lg, Sp.lg, 120),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      SafeArea(
+        bottom: false,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(Sp.lg, Sp.lg, Sp.lg, 120),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 
-              // ── Header ────────────────────────────────
+              // ── Header ────────────────────────────────────
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Profile', style: AppText.h2.copyWith(color: AppColors.onDark)),
+                  Text('Profile',
+                      style: AppText.h2.copyWith(color: AppColors.onDark)),
                   GestureDetector(
                     onTap: () => _openEditProfile(context),
                     child: Container(
@@ -59,23 +62,32 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               const SizedBox(height: Sp.lg),
 
-              // ── Avatar card ────────────────────────────
+              // ── Avatar card ──────────────────────────────
               GlassCard(
                 padding: const EdgeInsets.all(Sp.lg),
-                child: Column(children: [
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                  // Icon with camera badge
                   Stack(alignment: Alignment.bottomRight, children: [
                     Container(
                       width: 80, height: 80,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [AppColors.primaryLight.withOpacity(0.8), AppColors.primary],
-                          begin: Alignment.topLeft, end: Alignment.bottomRight,
+                          colors: [
+                            AppColors.primaryLight.withOpacity(0.8),
+                            AppColors.primary,
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
                         borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: AppColors.accent.withOpacity(0.35), width: 2),
+                        border: Border.all(
+                            color: AppColors.accent.withOpacity(0.35),
+                            width: 2),
                       ),
                       child: const Icon(Icons.person_rounded,
-                          color: AppColors.onDark, size: 40),
+                          color: AppColors.onDark, size: 52),
                     ),
                     GestureDetector(
                       onTap: () {},
@@ -84,37 +96,53 @@ class _ProfilePageState extends State<ProfilePage> {
                         decoration: BoxDecoration(
                           color: AppColors.accent,
                           shape: BoxShape.circle,
-                          border: Border.all(color: AppColors.primaryDark, width: 2),
+                          border: Border.all(
+                              color: AppColors.primaryDark, width: 2),
                         ),
                         child: const Icon(Icons.camera_alt_outlined,
                             size: 13, color: AppColors.primaryDark),
                       ),
                     ),
                   ]),
-                  const SizedBox(height: Sp.md),
-                  Text(_name,
-                      style: AppText.h3.copyWith(color: AppColors.onDark)),
-                  const SizedBox(height: 4),
-                  Text(_email,
-                      style: AppText.body.copyWith(
-                          color: AppColors.onDark.withOpacity(0.55), fontSize: 13)),
-                  const SizedBox(height: Sp.md),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: AppColors.accent.withOpacity(0.14),
-                      border: Border.all(color: AppColors.accent.withOpacity(0.30)),
-                      borderRadius: Rd.chip,
+                  const SizedBox(width: Sp.lg),
+
+                  // Text block
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(_name,
+                            style: AppText.h3.copyWith(color: AppColors.onDark)),
+                        const SizedBox(height: 4),
+                        Text(_email,
+                            style: AppText.body.copyWith(
+                                color: AppColors.onDark.withOpacity(0.55),
+                                fontSize: 13)),
+                        const SizedBox(height: Sp.md),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: AppColors.accent.withOpacity(0.14),
+                            border: Border.all(
+                                color: AppColors.accent.withOpacity(0.30)),
+                            borderRadius: Rd.chip,
+                          ),
+                          child: const Text('FREE PLAN',
+                              style: TextStyle(
+                                  color: AppColors.accent,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 1.0)),
+                        ),
+                      ],
                     ),
-                    child: const Text('FREE PLAN',
-                        style: TextStyle(color: AppColors.accent, fontSize: 10,
-                            fontWeight: FontWeight.w700, letterSpacing: 1.0)),
                   ),
                 ]),
               ),
               const SizedBox(height: Sp.md),
 
-              // ── Stats row ──────────────────────────────
+              // ── Stats row ────────────────────────────────
               Row(children: [
                 _StatTile(value: '124', label: 'Transactions'),
                 const SizedBox(width: Sp.sm),
@@ -126,7 +154,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ]),
               const SizedBox(height: Sp.xl),
 
-              // ── Account settings ───────────────────────
+              // ── Account ──────────────────────────────────
               _sectionLabel('Account'),
               const SizedBox(height: Sp.sm),
               _SettingsRow(
@@ -160,7 +188,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               const SizedBox(height: Sp.xl),
 
-              // ── Support ────────────────────────────────
+              // ── Support ──────────────────────────────────
               _sectionLabel('Support'),
               const SizedBox(height: Sp.sm),
               _SettingsRow(
@@ -178,10 +206,10 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               const SizedBox(height: Sp.xl),
 
-              // ── Sign out ───────────────────────────────
+              // ── Sign out ─────────────────────────────────
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context).pushAndRemoveUntil(
+                  navigatorKey.currentState?.pushAndRemoveUntil(
                     MaterialPageRoute(builder: (_) => const LoginPage()),
                     (_) => false,
                   );
@@ -190,33 +218,40 @@ class _ProfilePageState extends State<ProfilePage> {
                   padding: const EdgeInsets.all(Sp.md),
                   decoration: BoxDecoration(
                     color: AppColors.expense.withOpacity(0.08),
-                    border: Border.all(color: AppColors.expense.withOpacity(0.25)),
+                    border: Border.all(
+                        color: AppColors.expense.withOpacity(0.25)),
                     borderRadius: BorderRadius.circular(Rd.lg),
                   ),
-                  child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    Icon(Icons.logout_rounded,
-                        color: AppColors.expense.withOpacity(0.80), size: 18),
-                    const SizedBox(width: 8),
-                    Text('Sign Out',
-                        style: TextStyle(
-                            color: AppColors.expense.withOpacity(0.80),
-                            fontSize: 14, fontWeight: FontWeight.w600)),
-                  ]),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.logout_rounded,
+                          color: AppColors.expense.withOpacity(0.80),
+                          size: 18),
+                      const SizedBox(width: 8),
+                      Text('Sign Out',
+                          style: TextStyle(
+                              color: AppColors.expense.withOpacity(0.80),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600)),
+                    ],
+                  ),
                 ),
               ),
-            ]),
+            ],
           ),
         ),
-      ]),
-    );
+      ),
+    ]);
   }
 
   Widget _sectionLabel(String text) => Text(text,
       style: AppText.caption.copyWith(
           color: AppColors.onDark.withOpacity(0.40),
-          letterSpacing: 0.8, fontSize: 11));
+          letterSpacing: 0.8,
+          fontSize: 11));
 
-  // ── Open Edit Profile sheet ───────────────────────────────────────────────
+  // ── Edit Profile sheet ───────────────────────────────────────────────────────
   void _openEditProfile(BuildContext context) {
     final nameCtrl  = TextEditingController(text: _name);
     final emailCtrl = TextEditingController(text: _email);
@@ -236,14 +271,16 @@ class _ProfilePageState extends State<ProfilePage> {
             border: Border.all(color: AppColors.glassBorder),
           ),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Container(width: 40, height: 4,
-                decoration: BoxDecoration(
-                    color: AppColors.onDark.withOpacity(0.18),
-                    borderRadius: BorderRadius.circular(2))),
+            Container(
+              width: 40, height: 4,
+              decoration: BoxDecoration(
+                  color: AppColors.onDark.withOpacity(0.18),
+                  borderRadius: BorderRadius.circular(2)),
+            ),
             const SizedBox(height: Sp.md),
             const Text('Edit Profile', style: AppText.h3),
             const SizedBox(height: Sp.lg),
-            _sheetField(ctrl: nameCtrl,  hint: 'Full name',
+            _sheetField(ctrl: nameCtrl, hint: 'Full name',
                 icon: Icons.person_outline_rounded),
             const SizedBox(height: Sp.md),
             _sheetField(ctrl: emailCtrl, hint: 'Email address',
@@ -251,12 +288,17 @@ class _ProfilePageState extends State<ProfilePage> {
                 keyboard: TextInputType.emailAddress),
             const SizedBox(height: Sp.xl),
             GestureDetector(
-              onTap: () {
-                setState(() {
-                  _name  = nameCtrl.text.trim().isNotEmpty ? nameCtrl.text.trim() : _name;
-                  _email = emailCtrl.text.trim().isNotEmpty ? emailCtrl.text.trim() : _email;
-                });
-                Navigator.pop(context);
+              onTap: () async {
+                final newName  = nameCtrl.text.trim();
+                final newEmail = emailCtrl.text.trim();
+                if (newName.isNotEmpty) await UserService.updateName(newName);
+                if (newEmail.isNotEmpty && newEmail != _email) {
+                  await UserService.updateEmail(newEmail);
+                }
+                if (mounted) {
+                  setState(() {});
+                  Navigator.pop(context);
+                }
               },
               child: _saveBtn('Save Changes'),
             ),
@@ -266,7 +308,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  // ── Open Change Password sheet ────────────────────────────────────────────
+  // ── Change Password sheet ────────────────────────────────────────────────────
   void _openChangePassword(BuildContext context) {
     final currentCtrl = TextEditingController();
     final newCtrl     = TextEditingController();
@@ -287,10 +329,12 @@ class _ProfilePageState extends State<ProfilePage> {
             border: Border.all(color: AppColors.glassBorder),
           ),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Container(width: 40, height: 4,
-                decoration: BoxDecoration(
-                    color: AppColors.onDark.withOpacity(0.18),
-                    borderRadius: BorderRadius.circular(2))),
+            Container(
+              width: 40, height: 4,
+              decoration: BoxDecoration(
+                  color: AppColors.onDark.withOpacity(0.18),
+                  borderRadius: BorderRadius.circular(2)),
+            ),
             const SizedBox(height: Sp.md),
             const Text('Change Password', style: AppText.h3),
             const SizedBox(height: Sp.lg),
@@ -342,27 +386,32 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _saveBtn(String label) => Container(
-    height: 52, width: double.infinity,
-    decoration: BoxDecoration(
-      gradient: const LinearGradient(
-        colors: [AppColors.accent, AppColors.accentDark],
-        begin: Alignment.topLeft, end: Alignment.bottomRight,
+  Widget _saveBtn(String label) {
+    return Container(
+      height: 52, width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [AppColors.accent, AppColors.accentDark],
+          begin: Alignment.topLeft, end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(Rd.lg),
+        boxShadow: AppShadows.goldGlow,
       ),
-      borderRadius: BorderRadius.circular(Rd.lg),
-      boxShadow: AppShadows.goldGlow,
-    ),
-    child: Center(child: Text(label,
-        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700,
-            color: AppColors.primaryDark))),
-  );
+      child: Center(child: Text(label,
+          style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: AppColors.primaryDark))),
+    );
+  }
 }
 
-// ── Stat tile ─────────────────────────────────────────────────────────────────
+// ── Stat tile ──────────────────────────────────────────────────────────────────
 class _StatTile extends StatelessWidget {
   final String value, label;
   final Color? valueColor;
-  const _StatTile({required this.value, required this.label, this.valueColor});
+  const _StatTile({
+    required this.value, required this.label, this.valueColor});
 
   @override
   Widget build(BuildContext context) {
@@ -375,7 +424,8 @@ class _StatTile extends StatelessWidget {
               color: valueColor ?? AppColors.onDark,
               fontSize: 18, fontWeight: FontWeight.w800)),
           const SizedBox(height: 4),
-          Text(label, style: AppText.caption.copyWith(fontSize: 10),
+          Text(label,
+              style: AppText.caption.copyWith(fontSize: 10),
               textAlign: TextAlign.center),
         ]),
       ),
@@ -383,7 +433,7 @@ class _StatTile extends StatelessWidget {
   }
 }
 
-// ── Settings row ──────────────────────────────────────────────────────────────
+// ── Settings row ───────────────────────────────────────────────────────────────
 class _SettingsRow extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
@@ -414,8 +464,8 @@ class _SettingsRow extends StatelessWidget {
           ),
           const SizedBox(width: Sp.md),
           Expanded(child: Text(label,
-              style: AppText.body.copyWith(fontSize: 14,
-                  fontWeight: FontWeight.w500))),
+              style: AppText.body.copyWith(
+                  fontSize: 14, fontWeight: FontWeight.w500))),
           trailing ?? Icon(Icons.chevron_right_rounded,
               color: AppColors.onDark.withOpacity(0.25), size: 20),
         ]),
@@ -424,7 +474,7 @@ class _SettingsRow extends StatelessWidget {
   }
 }
 
-// ── Toggle switch ─────────────────────────────────────────────────────────────
+// ── Toggle ─────────────────────────────────────────────────────────────────────
 class _Toggle extends StatefulWidget {
   final bool initialValue;
   const _Toggle({this.initialValue = false});
@@ -434,8 +484,12 @@ class _Toggle extends StatefulWidget {
 
 class _ToggleState extends State<_Toggle> {
   late bool _on;
+
   @override
-  void initState() { super.initState(); _on = widget.initialValue; }
+  void initState() {
+    super.initState();
+    _on = widget.initialValue;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -445,9 +499,13 @@ class _ToggleState extends State<_Toggle> {
         duration: const Duration(milliseconds: 200),
         width: 42, height: 24,
         decoration: BoxDecoration(
-          color: _on ? AppColors.income.withOpacity(0.28) : AppColors.onDark.withOpacity(0.10),
+          color: _on
+              ? AppColors.income.withOpacity(0.28)
+              : AppColors.onDark.withOpacity(0.10),
           border: Border.all(
-              color: _on ? AppColors.income.withOpacity(0.45) : AppColors.onDark.withOpacity(0.15)),
+              color: _on
+                  ? AppColors.income.withOpacity(0.45)
+                  : AppColors.onDark.withOpacity(0.15)),
           borderRadius: BorderRadius.circular(12),
         ),
         child: AnimatedAlign(
@@ -457,13 +515,14 @@ class _ToggleState extends State<_Toggle> {
             width: 18, height: 18,
             margin: const EdgeInsets.symmetric(horizontal: 2),
             decoration: BoxDecoration(
-              color: _on ? AppColors.income : AppColors.onDark.withOpacity(0.35),
+              color: _on
+                  ? AppColors.income
+                  : AppColors.onDark.withOpacity(0.35),
               shape: BoxShape.circle,
             ),
           ),
         ),
       ),
     );
-    
   }
 }
