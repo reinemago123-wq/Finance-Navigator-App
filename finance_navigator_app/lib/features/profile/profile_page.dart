@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../core/theme.dart';
 import '../../widgets/glass_card.dart';
 import '../auth/login_page.dart';
-import '../../main.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -182,7 +181,7 @@ class _ProfilePageState extends State<ProfilePage> {
               // ── Sign out ───────────────────────────────
               GestureDetector(
                 onTap: () {
-                  navigatorKey.currentState?.pushAndRemoveUntil(
+                  Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(builder: (_) => const LoginPage()),
                     (_) => false,
                   );
@@ -465,5 +464,6 @@ class _ToggleState extends State<_Toggle> {
         ),
       ),
     );
+    
   }
 }
