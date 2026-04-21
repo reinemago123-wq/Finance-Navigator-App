@@ -35,9 +35,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
   Widget build(BuildContext context) {
     final maxSpend = _categories.fold(0.0, (m, c) => c.spent > m ? c.spent : m);
 
-    return Scaffold(
-      backgroundColor: AppColors.primaryDark,
-      body: Stack(children: [
+    return Stack(children: [
         Positioned(
           top: -80, right: -40,
           child: Container(
@@ -239,8 +237,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
             ),
           ),
         ),
-      ]),
-    );
+      ]);
   }
 
   Widget _summaryTile({required String label, required String value,

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../core/theme.dart';
+import '../../core/theme_provider.dart';
 import '../../widgets/glass_card.dart';
 import '../services/user_service.dart';
 import '../auth/login_page.dart';
@@ -183,8 +185,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 icon: Icons.dark_mode_outlined,
                 iconColor: const Color(0xFFA29BFE),
                 label: 'Dark Mode',
-                trailing: _Toggle(initialValue: true),
-                onTap: () {},
+                trailing: Consumer<ThemeProvider>(
+                  builder: (_, tp, __) => _Toggle(
+                    initialValue: tp.isDark,
+                    onChanged: (_) => tp.toggle(),
+                  ),
+                ),
+                onTap: () => context.read<ThemeProvider>().toggle(),
               ),
               const SizedBox(height: Sp.xl),
 
@@ -477,7 +484,8 @@ class _SettingsRow extends StatelessWidget {
 // ── Toggle ─────────────────────────────────────────────────────────────────────
 class _Toggle extends StatefulWidget {
   final bool initialValue;
-  const _Toggle({this.initialValue = false});
+  final ValueChanged<bool>? onChanged;
+  const _Toggle({this.initialValue = false, this.onChanged});
   @override
   State<_Toggle> createState() => _ToggleState();
 }
@@ -492,9 +500,21 @@ class _ToggleState extends State<_Toggle> {
   }
 
   @override
+  void didUpdateWidget(_Toggle old) {
+    super.didUpdateWidget(old);
+    // Stay in sync when ThemeProvider changes from outside
+    if (old.initialValue != widget.initialValue) {
+      _on = widget.initialValue;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => setState(() => _on = !_on),
+      onTap: () {
+        setState(() => _on = !_on);
+        widget.onChanged?.call(_on);
+      },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         width: 42, height: 24,

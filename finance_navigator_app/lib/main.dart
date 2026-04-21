@@ -2,30 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+import 'core/theme.dart';
+import 'core/theme_provider.dart';
 import 'features/onboarding/splash_screen.dart';
 import 'features/onboarding/onboarding_screen.dart';
 import 'features/auth/login_page.dart';
 import 'features/main_shell.dart';
-import 'core/theme.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // ── Init Firebase ────────────────────────────────────────────────────────
   await Firebase.initializeApp();
-
   SystemChrome.setPreferredOrientations(
-    [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
-  );
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.light,
+  ));
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: const FinanceNavigatorApp(),
     ),
   );
-  runApp(const FinanceNavigatorApp());
 }
 
 class FinanceNavigatorApp extends StatelessWidget {
@@ -33,32 +34,26 @@ class FinanceNavigatorApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<ThemeProvider>();
     return MaterialApp(
       title: 'Finance Navigator',
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
-      theme: ThemeData(
-        useMaterial3: true,
-        scaffoldBackgroundColor: AppColors.primaryDark,
-      ),
-      // ── Auth gate: show MainShell if logged in, otherwise onboarding ──────
+      themeMode: themeProvider.themeMode,
+      theme:     AppTheme.light,
+      darkTheme:  AppTheme.dark,
       home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
-          // Still checking
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Scaffold(
-              backgroundColor: AppColors.primaryDark,
-              body: Center(
-                child: CircularProgressIndicator(color: AppColors.accent),
-              ),
+            return Scaffold(
+              body: Center(child: CircularProgressIndicator(
+                  color: AppColors.accent)),
             );
           }
-          // Already logged in — go straight to app
           if (snapshot.hasData && snapshot.data != null) {
             return const MainShell();
           }
-          // Not logged in — show splash → onboarding → login
           return SplashScreen(onComplete: _goToOnboarding);
         },
       ),
@@ -68,21 +63,16 @@ class FinanceNavigatorApp extends StatelessWidget {
 
 void _goToOnboarding() {
   navigatorKey.currentState?.pushReplacement(
-    _fadeRoute(OnboardingScreen(onFinished: _goToLogin)),
-  );
+      _fade(OnboardingScreen(onFinished: _goToLogin)));
 }
 
 void _goToLogin() {
-  navigatorKey.currentState?.pushReplacement(
-    _fadeRoute(const LoginPage()),
-  );
+  navigatorKey.currentState?.pushReplacement(_fade(const LoginPage()));
 }
 
-PageRouteBuilder<void> _fadeRoute(Widget page) {
-  return PageRouteBuilder(
-    pageBuilder: (_, __, ___) => page,
-    transitionsBuilder: (_, animation, __, child) =>
-        FadeTransition(opacity: animation, child: child),
-    transitionDuration: const Duration(milliseconds: 400),
-  );
-}
+PageRouteBuilder<void> _fade(Widget page) => PageRouteBuilder(
+  pageBuilder: (_, __, ___) => page,
+  transitionsBuilder: (_, anim, __, child) =>
+      FadeTransition(opacity: anim, child: child),
+  transitionDuration: const Duration(milliseconds: 400),
+);

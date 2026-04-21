@@ -36,7 +36,7 @@ class _MainShellState extends State<MainShell> {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
 
     return Scaffold(
-      backgroundColor: AppColors.primaryDark,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
       // ── Pages ─────────────────────────────────────────
       body: IndexedStack(

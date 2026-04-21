@@ -32,9 +32,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
   Widget build(BuildContext context) {
     final grouped = _groupByDate(_filtered);
 
-    return Scaffold(
-      backgroundColor: AppColors.primaryDark,
-      body: Stack(children: [
+    return Stack(children: [
         Positioned(
           top: -60, left: 0, right: 0,
           child: Container(height: 280,
@@ -113,8 +111,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
             ),
           ]),
         ),
-      ]),
-    );
+      ]);
   }
 
   Map<String, List<_Txn>> _groupByDate(List<_Txn> txns) {

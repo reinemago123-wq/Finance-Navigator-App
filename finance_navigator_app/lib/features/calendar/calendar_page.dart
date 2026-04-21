@@ -112,9 +112,7 @@ class _CalendarPageState extends State<CalendarPage> {
         'July','August','September','October','November','December'];
     final monthName = monthNames[_focusedMonth.month - 1];
 
-    return Scaffold(
-      backgroundColor: AppColors.primaryDark,
-      body: Stack(children: [
+    return Stack(children: [
         Positioned(
           top: -60, right: -40,
           child: Container(
@@ -314,8 +312,7 @@ class _CalendarPageState extends State<CalendarPage> {
             ]),
           ),
         ),
-      ]),
-    );
+      ]);
   }
 
   Widget _buildGrid() {

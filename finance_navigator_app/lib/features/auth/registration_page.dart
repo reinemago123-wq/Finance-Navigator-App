@@ -126,7 +126,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
     final double strength = _getPasswordStrength(_passwordController.text);
 
     return Scaffold(
-      backgroundColor: AppColors.primaryDark,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Stack(
         children: [
           // ── Background orbs ──────────────────────────

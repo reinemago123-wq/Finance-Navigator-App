@@ -2,11 +2,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../core/theme.dart';
 
-// ─────────────────────────────────────────────
-//  GlassCard — frosted glass effect container
-//  Used throughout the app for cards, panels, etc.
-// ─────────────────────────────────────────────
-
 class GlassCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry? padding;
@@ -27,7 +22,7 @@ class GlassCard extends StatelessWidget {
     this.shadows,
   });
 
-  /// Gold-tinted glass variant
+  /// Gold-tinted glass variant — always gold regardless of theme
   factory GlassCard.gold({
     required Widget child,
     EdgeInsetsGeometry? padding,
@@ -44,27 +39,25 @@ class GlassCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Use context helpers so fill + border respond to theme
+    final fill   = backgroundColor ?? context.glassFill;
+    final border = borderColor     ?? context.glassBorderColor;
+
     return ClipRRect(
       borderRadius: borderRadius ?? Rd.card,
       child: BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: blurStrength,
-          sigmaY: blurStrength,
-        ),
+        filter: ImageFilter.blur(sigmaX: blurStrength, sigmaY: blurStrength),
         child: Container(
           padding: padding ?? const EdgeInsets.all(Sp.md),
           decoration: BoxDecoration(
-            color: backgroundColor ?? AppColors.glassWhite,
+            color: fill,
             borderRadius: borderRadius ?? Rd.card,
-            border: Border.all(
-              color: borderColor ?? AppColors.glassBorder,
-              width: 1.0,
-            ),
+            border: Border.all(color: border, width: 1.0),
             boxShadow: shadows,
           ),
           child: child,
         ),
       ),
-    ); 
+    );
   }
 }

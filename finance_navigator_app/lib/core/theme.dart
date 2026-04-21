@@ -148,3 +148,91 @@ class AppShadows {
     ),
   ];
 }
+
+// ─── ThemeData ─────────────────────────────────────────────────────────────────
+
+class AppTheme {
+  // ── Dark ────────────────────────────────────────────────────────────────────
+  static ThemeData get dark => ThemeData(
+    brightness: Brightness.dark,
+    useMaterial3: true,
+    scaffoldBackgroundColor: AppColors.primaryDark,
+    colorScheme: const ColorScheme.dark(
+      primary:   AppColors.accent,
+      secondary: AppColors.accent,
+      surface:   AppColors.primary,
+    ),
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+    ),
+    textTheme: _textTheme(AppColors.onDark),
+    inputDecorationTheme: _inputTheme(AppColors.onDark),
+    dividerColor: AppColors.glassBorder,
+  );
+
+  // ── Light ───────────────────────────────────────────────────────────────────
+  static ThemeData get light => ThemeData(
+    brightness: Brightness.light,
+    useMaterial3: true,
+    scaffoldBackgroundColor: const Color(0xFFF0F4FF),
+    colorScheme: const ColorScheme.light(
+      primary:   AppColors.accent,
+      secondary: AppColors.accent,
+      surface:   Colors.white,
+    ),
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      iconTheme: IconThemeData(color: AppColors.primary),
+    ),
+    textTheme: _textTheme(AppColors.primary),
+    inputDecorationTheme: _inputTheme(AppColors.primary),
+    dividerColor: Color(0xFFE0E7F0),
+  );
+
+  static TextTheme _textTheme(Color base) => TextTheme(
+    displayLarge: TextStyle(color: base),
+    bodyLarge:    TextStyle(color: base),
+    bodyMedium:   TextStyle(color: base),
+  );
+
+  static InputDecorationTheme _inputTheme(Color base) =>
+      InputDecorationTheme(
+        hintStyle: TextStyle(color: base.withOpacity(0.40)),
+        border: InputBorder.none,
+      );
+}
+
+// ─── Context helpers ───────────────────────────────────────────────────────────
+// Use these in widgets instead of hardcoded AppColors.onDark / AppColors.primaryDark
+
+extension AppThemeContext on BuildContext {
+  bool   get isDark        => Theme.of(this).brightness == Brightness.dark;
+
+  // Text colour — white in dark, navy in light
+  Color  get textColor     => isDark ? AppColors.onDark  : AppColors.primary;
+
+  // Subtle text
+  Color  get textMuted     => textColor.withOpacity(0.55);
+
+  // Card / glass fill
+  Color  get glassFill     => isDark
+      ? const Color(0x0FFFFFFF)   // 6% white
+      : const Color(0x99FFFFFF);  // 60% white
+
+  // Card border
+  Color  get glassBorderColor => isDark
+      ? const Color(0x1FFFFFFF)   // 12% white
+      : const Color(0xFFDDE5F0);  // light blue-grey
+
+  // Page background
+  Color  get bgColor       => isDark
+      ? AppColors.primaryDark
+      : const Color(0xFFF0F4FF);
+
+  // Orb / glow tint
+  Color  get orbTint       => isDark
+      ? AppColors.accent.withOpacity(0.15)
+      : AppColors.accent.withOpacity(0.08);
+}
