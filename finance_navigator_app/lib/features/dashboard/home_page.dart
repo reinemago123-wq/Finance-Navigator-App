@@ -220,17 +220,6 @@ class _HomePageState extends State<HomePage> {
                             valueColor: const AlwaysStoppedAnimation<Color>(
                                 AppColors.income),
                           ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text('65%',
-                                  style: AppText.h3.copyWith(
-                                      color: AppColors.income)),
-                              Text('of goal',
-                                  style: AppText.caption.copyWith(
-                                      color: AppColors.onDark.withOpacity(0.60))),
-                            ],
-                          ),
                         ],
                       ),
                     ),
