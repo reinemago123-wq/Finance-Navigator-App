@@ -4,91 +4,123 @@ import '../../widgets/glass_card.dart';
 import '../../models/models.dart';
 import '../../services/db_service.dart';
 
-class SavingsPage extends StatelessWidget {
+class SavingsPage extends StatefulWidget {
   const SavingsPage({super.key});
   @override
+  State<SavingsPage> createState() => _SavingsPageState();
+}
+
+class _SavingsPageState extends State<SavingsPage> {
+  @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<SavingsGoalModel>>(
-      stream: DbService.watchGoals(),
-      builder: (ctx, snap) {
-        final goals      = snap.data ?? [];
-        final totalSaved = goals.fold(0.0, (s, g) => s + g.saved);
-        final isLoading  = snap.connectionState == ConnectionState.waiting;
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: StreamBuilder<List<SavingsGoalModel>>(
+        stream: DbService.watchGoals(),
+        builder: (ctx, snap) {
+          final goals      = snap.data ?? [];
+          final totalSaved = goals.fold(0.0, (s, g) => s + g.saved);
+          final loading    = snap.connectionState == ConnectionState.waiting;
 
-        return Stack(children: [
-          Positioned(top: -60, right: -40, child: Container(width: 240, height: 240,
-            decoration: BoxDecoration(shape: BoxShape.circle,
-              gradient: RadialGradient(colors: [AppColors.income.withOpacity(0.10), Colors.transparent])))),
-          SafeArea(bottom: false, child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(Sp.lg, Sp.lg, Sp.lg, 120),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          return Stack(children: [
+            // Background orb
+            Positioned(top: -60, right: -40, child: Container(width: 240, height: 240,
+              decoration: BoxDecoration(shape: BoxShape.circle,
+                gradient: RadialGradient(colors: [
+                  AppColors.income.withOpacity(0.10), Colors.transparent])))),
 
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Text('Savings Goals', style: AppText.h2.copyWith(color: AppColors.onDark)),
-                GestureDetector(
-                  onTap: () => _openSheet(ctx, null),
-                  child: Container(width: 38, height: 38,
-                    decoration: BoxDecoration(gradient: AppGradients.accent,
-                      borderRadius: BorderRadius.circular(Rd.md), boxShadow: AppShadows.goldGlow),
-                    child: const Icon(Icons.add_rounded, color: AppColors.primaryDark, size: 22))),
+            SafeArea(bottom: false, child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(Sp.lg, Sp.lg, Sp.lg, 120),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+                // ── Header ──────────────────────────────
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  Text('Savings Goals', style: AppText.h2.copyWith(color: AppColors.onDark)),
+                  GestureDetector(
+                    onTap: () => _openSheet(context, null),
+                    child: Container(width: 38, height: 38,
+                      decoration: BoxDecoration(gradient: AppGradients.accent,
+                        borderRadius: BorderRadius.circular(Rd.md),
+                        boxShadow: AppShadows.goldGlow),
+                      child: const Icon(Icons.add_rounded, color: AppColors.primaryDark, size: 22))),
+                ]),
+                const SizedBox(height: Sp.lg),
+
+                // ── Summary card ─────────────────────────
+                GlassCard(padding: const EdgeInsets.all(Sp.lg),
+                  child: Row(children: [
+                  Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text('TOTAL SAVED', style: AppText.caption.copyWith(letterSpacing: 0.8, fontSize: 10)),
+                    const SizedBox(height: 3),
+                    Text('\$${totalSaved.toInt()}',
+                      style: AppText.moneyLarge.copyWith(color: AppColors.accent)),
+                    Text('across ${goals.length} goal${goals.length == 1 ? '' : 's'}',
+                      style: AppText.caption.copyWith(fontSize: 11)),
+                  ])),
+                  Container(width: 1, height: 44, color: AppColors.glassBorder,
+                    margin: const EdgeInsets.symmetric(horizontal: Sp.md)),
+                  Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text('IN PROGRESS', style: AppText.caption.copyWith(letterSpacing: 0.8, fontSize: 10)),
+                    const SizedBox(height: 3),
+                    Text('${goals.where((g) => !g.complete).length}',
+                      style: const TextStyle(color: AppColors.income,
+                        fontSize: 22, fontWeight: FontWeight.w800)),
+                    Text('active goals', style: AppText.caption.copyWith(fontSize: 11)),
+                  ])),
+                ])),
+                const SizedBox(height: Sp.lg),
+
+                // ── Goal list ────────────────────────────
+                if (loading)
+                  const Center(child: Padding(padding: EdgeInsets.all(32),
+                    child: CircularProgressIndicator(color: AppColors.accent)))
+                else if (goals.isEmpty)
+                  _EmptyState(onAdd: () => _openSheet(context, null))
+                else
+                  ...goals.map((g) => Padding(
+                    padding: const EdgeInsets.only(bottom: Sp.md),
+                    child: GestureDetector(
+                      onTap: () => _openSheet(context, g),
+                      child: _GoalCard(goal: g)))),
               ]),
-              const SizedBox(height: Sp.lg),
-
-              GlassCard(padding: const EdgeInsets.all(Sp.lg), child: Row(children: [
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text('TOTAL SAVED', style: AppText.caption.copyWith(letterSpacing: 0.8, fontSize: 10)),
-                  const SizedBox(height: 3),
-                  Text('\$${totalSaved.toInt()}', style: AppText.moneyLarge.copyWith(color: AppColors.accent)),
-                  Text('across ${goals.length} goal${goals.length == 1 ? '' : 's'}',
-                    style: AppText.caption.copyWith(fontSize: 11)),
-                ])),
-                Container(width: 1, height: 44, color: AppColors.glassBorder,
-                  margin: const EdgeInsets.symmetric(horizontal: Sp.md)),
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text('ACTIVE GOALS', style: AppText.caption.copyWith(letterSpacing: 0.8, fontSize: 10)),
-                  const SizedBox(height: 3),
-                  Text('${goals.where((g) => !g.complete).length}',
-                    style: const TextStyle(color: AppColors.income, fontSize: 22, fontWeight: FontWeight.w800)),
-                  Text('in progress', style: AppText.caption.copyWith(fontSize: 11)),
-                ])),
-              ])),
-              const SizedBox(height: Sp.lg),
-
-              if (isLoading)
-                const Center(child: Padding(padding: EdgeInsets.all(32),
-                  child: CircularProgressIndicator(color: AppColors.accent)))
-              else if (goals.isEmpty)
-                GlassCard(padding: const EdgeInsets.symmetric(vertical: Sp.xl),
-                  child: Column(children: [
-                    Text('🎯', style: const TextStyle(fontSize: 48)),
-                    const SizedBox(height: Sp.md),
-                    Text('No savings goals yet', style: AppText.h3),
-                    const SizedBox(height: Sp.sm),
-                    Text('Create a goal to start saving', style: AppText.caption.copyWith(fontSize: 12)),
-                    const SizedBox(height: Sp.lg),
-                    GestureDetector(onTap: () => _openSheet(ctx, null),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: Sp.xl, vertical: 12),
-                        decoration: BoxDecoration(gradient: AppGradients.accent,
-                          borderRadius: BorderRadius.circular(Rd.lg), boxShadow: AppShadows.goldGlow),
-                        child: const Text('Create First Goal', style: TextStyle(
-                          color: AppColors.primaryDark, fontSize: 13, fontWeight: FontWeight.w700)))),
-                  ]))
-              else
-                ...goals.map((g) => Padding(padding: const EdgeInsets.only(bottom: Sp.md),
-                  child: GestureDetector(onTap: () => _openSheet(ctx, g),
-                    child: _GoalCard(goal: g)))),
-            ]),
-          )),
-        ]);
-      });
+            )),
+          ]);
+        }),
+      );
   }
 
   void _openSheet(BuildContext ctx, SavingsGoalModel? goal) {
-    showModalBottomSheet(context: ctx,
-      backgroundColor: Colors.transparent, isScrollControlled: true,
+    showModalBottomSheet(
+      context: ctx, backgroundColor: Colors.transparent, isScrollControlled: true,
       builder: (_) => _GoalSheet(goal: goal));
   }
+}
+
+// ── Empty state ────────────────────────────────────────────────────────────────
+class _EmptyState extends StatelessWidget {
+  final VoidCallback onAdd;
+  const _EmptyState({required this.onAdd});
+  @override
+  Widget build(BuildContext context) => GlassCard(
+    padding: const EdgeInsets.symmetric(vertical: Sp.xl, horizontal: Sp.lg),
+    child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      Icon(Icons.savings_outlined, color: AppColors.onDark.withOpacity(0.20), size: 56),
+      const SizedBox(height: Sp.md),
+      Text('No savings goals yet', style: AppText.h3, textAlign: TextAlign.center),
+      const SizedBox(height: Sp.sm),
+      Text('Create a goal to start saving',
+        style: AppText.caption.copyWith(fontSize: 12), textAlign: TextAlign.center),
+      const SizedBox(height: Sp.lg),
+      GestureDetector(onTap: onAdd,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(gradient: AppGradients.accent,
+            borderRadius: BorderRadius.circular(Rd.lg),
+            boxShadow: AppShadows.goldGlow),
+          child: const Text('Create First Goal', style: TextStyle(
+            color: AppColors.primaryDark, fontSize: 13, fontWeight: FontWeight.w700),
+            textAlign: TextAlign.center))),
+    ]));
 }
 
 // ── Goal card ──────────────────────────────────────────────────────────────────
@@ -96,36 +128,50 @@ class _GoalCard extends StatelessWidget {
   final SavingsGoalModel goal;
   const _GoalCard({required this.goal});
   @override
-  Widget build(BuildContext context) {
-    return GlassCard(padding: const EdgeInsets.all(Sp.lg), child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start, children: [
+  Widget build(BuildContext context) => GlassCard(
+    padding: const EdgeInsets.all(Sp.lg),
+    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Row(children: [
-        Text(goal.emoji, style: const TextStyle(fontSize: 26)),
+        Container(width: 46, height: 46,
+          decoration: BoxDecoration(color: goal.color.withOpacity(0.18),
+            borderRadius: BorderRadius.circular(14)),
+          child: Center(child: Text(goal.emoji, style: const TextStyle(fontSize: 22)))),
         const SizedBox(width: Sp.md),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(goal.name, style: AppText.body.copyWith(fontWeight: FontWeight.w700, fontSize: 15)),
+          Text(goal.name, style: AppText.body.copyWith(
+            fontWeight: FontWeight.w700, fontSize: 15, color: AppColors.onDark)),
           const SizedBox(height: 2),
-          Text('Target: ${goal.deadlineLabel}', style: AppText.caption.copyWith(fontSize: 11)),
+          Text('Target: ${goal.deadlineLabel}',
+            style: AppText.caption.copyWith(fontSize: 11)),
         ])),
-        Text(goal.complete ? '✓ Done' : '${(goal.pct * 100).toInt()}%',
-          style: TextStyle(color: goal.color, fontSize: 15, fontWeight: FontWeight.w800)),
+        Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: goal.color.withOpacity(0.14),
+              border: Border.all(color: goal.color.withOpacity(0.28)),
+              borderRadius: Rd.chip),
+            child: Text(goal.complete ? '✓ Done' : '${(goal.pct * 100).toInt()}%',
+              style: TextStyle(color: goal.color, fontSize: 11, fontWeight: FontWeight.w700))),
+          const SizedBox(height: 4),
+          Text('tap to edit', style: AppText.caption.copyWith(
+            fontSize: 10, color: AppColors.onDark.withOpacity(0.30))),
+        ]),
       ]),
       const SizedBox(height: Sp.md),
       ClipRRect(borderRadius: BorderRadius.circular(4),
-        child: LinearProgressIndicator(value: goal.pct, minHeight: 6,
+        child: LinearProgressIndicator(value: goal.pct, minHeight: 7,
           backgroundColor: AppColors.onDark.withOpacity(0.08),
           valueColor: AlwaysStoppedAnimation<Color>(goal.color))),
-      const SizedBox(height: 6),
+      const SizedBox(height: 8),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Text('\$${goal.saved.toInt()} saved', style: AppText.body.copyWith(
-          fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.onDark.withOpacity(0.70))),
-        Text('\$${goal.remaining.toInt()} remaining', style: AppText.caption.copyWith(fontSize: 10)),
+        Text('\$${goal.saved.toInt()} saved',
+          style: AppText.body.copyWith(fontSize: 12, fontWeight: FontWeight.w600,
+            color: AppColors.onDark.withOpacity(0.70))),
+        Text('\$${goal.remaining.toInt()} to go',
+          style: AppText.caption.copyWith(fontSize: 10)),
       ]),
-      const SizedBox(height: 3),
-      Text('Tap to edit', style: AppText.caption.copyWith(
-        fontSize: 10, color: AppColors.onDark.withOpacity(0.30))),
     ]));
-  }
 }
 
 // ── Add / Edit sheet ───────────────────────────────────────────────────────────
@@ -142,7 +188,6 @@ class _GoalSheetState extends State<_GoalSheet> {
   late final TextEditingController _saved;
   late DateTime _deadline;
   bool _saving = false;
-
   bool get _isNew => widget.goal == null;
 
   @override
@@ -167,16 +212,14 @@ class _GoalSheetState extends State<_GoalSheet> {
       final target = double.parse(_target.text);
       final saved  = (double.tryParse(_saved.text) ?? (widget.goal?.saved ?? 0)).clamp(0.0, target);
       if (_isNew) {
-        final newGoal = SavingsGoalModel(
+        await DbService.addGoal(SavingsGoalModel(
           id: '', emoji: '🎯', name: _name.text.trim(),
           target: target, saved: saved,
           colorValue: AppColors.accent.value,
-          deadline: _deadline);
-        await DbService.addGoal(newGoal);
+          deadline: _deadline));
       } else {
-        final updated = widget.goal!.copyWith(
-          name: _name.text.trim(), target: target, saved: saved, deadline: _deadline);
-        await DbService.updateGoal(updated);
+        await DbService.updateGoal(
+          widget.goal!.copyWith(name: _name.text.trim(), target: target, saved: saved, deadline: _deadline));
       }
       if (mounted) Navigator.pop(context);
     } catch (_) {
@@ -190,19 +233,20 @@ class _GoalSheetState extends State<_GoalSheet> {
   }
 
   Future<void> _pickDate() async {
-    final picked = await showDatePicker(context: context, initialDate: _deadline,
+    final p = await showDatePicker(context: context, initialDate: _deadline,
       firstDate: DateTime.now(), lastDate: DateTime(2035),
       builder: (ctx, child) => Theme(data: ThemeData.dark().copyWith(
-        colorScheme: const ColorScheme.dark(primary: AppColors.accent, surface: AppColors.primary)),
-        child: child!));
-    if (picked != null) setState(() => _deadline = picked);
+        colorScheme: const ColorScheme.dark(
+          primary: AppColors.accent, surface: AppColors.primary)), child: child!));
+    if (p != null) setState(() => _deadline = p);
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.fromLTRB(16, 0, 16, 16 + MediaQuery.of(context).viewInsets.bottom),
-      child: Container(padding: const EdgeInsets.all(Sp.lg),
+      child: Container(
+        padding: const EdgeInsets.all(Sp.lg),
         decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.97),
           borderRadius: BorderRadius.circular(Rd.xxl),
           border: Border.all(color: AppColors.glassBorder)),
@@ -218,14 +262,14 @@ class _GoalSheetState extends State<_GoalSheet> {
                 color: AppColors.expense, fontSize: 13, fontWeight: FontWeight.w600))),
           ]),
           const SizedBox(height: Sp.lg),
-          _field(ctrl: _name, hint: 'Goal name', icon: Icons.flag_outlined,
+          _field(ctrl: _name,   hint: 'Goal name',           icon: Icons.flag_outlined,
             onChanged: () => setState(() {})),
           const SizedBox(height: Sp.sm),
-          _field(ctrl: _target, hint: 'Target amount', icon: Icons.track_changes_rounded,
+          _field(ctrl: _target, hint: 'Target amount',        icon: Icons.track_changes_rounded,
             keyboard: const TextInputType.numberWithOptions(decimal: true),
             prefix: '\$', onChanged: () => setState(() {})),
           const SizedBox(height: Sp.sm),
-          _field(ctrl: _saved, hint: 'Amount saved so far', icon: Icons.savings_outlined,
+          _field(ctrl: _saved,  hint: 'Amount saved so far',  icon: Icons.savings_outlined,
             keyboard: const TextInputType.numberWithOptions(decimal: true),
             prefix: '\$', onChanged: () {}),
           const SizedBox(height: Sp.sm),
@@ -234,7 +278,7 @@ class _GoalSheetState extends State<_GoalSheet> {
               child: Row(children: [
                 Icon(Icons.calendar_today_outlined, color: AppColors.accent.withOpacity(0.65), size: 18),
                 const SizedBox(width: Sp.md),
-                Text('${_deadline.day}/${_deadline.month}/${_deadline.year}',
+                Text('Deadline: ${_deadline.day}/${_deadline.month}/${_deadline.year}',
                   style: AppText.body.copyWith(fontSize: 13)),
                 const Spacer(),
                 Icon(Icons.edit_calendar_outlined, color: AppColors.onDark.withOpacity(0.30), size: 16),

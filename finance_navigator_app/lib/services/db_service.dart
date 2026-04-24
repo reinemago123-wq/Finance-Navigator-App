@@ -85,16 +85,19 @@ class DbService {
           .snapshots()
           .map((s) => s.docs.map(BillModel.fromFirestore).toList());
 
-  /// Bills for a specific month
+  /// Bills for a specific month — sorted in-app to avoid composite index
   static Stream<List<BillModel>> watchBillsForMonth(int year, int month) {
     final start = DateTime(year, month, 1);
     final end   = DateTime(year, month + 1, 1);
     return _col('bills')
         .where('dueDate', isGreaterThanOrEqualTo: Timestamp.fromDate(start))
         .where('dueDate', isLessThan: Timestamp.fromDate(end))
-        .orderBy('dueDate')
         .snapshots()
-        .map((s) => s.docs.map(BillModel.fromFirestore).toList());
+        .map((s) {
+          final list = s.docs.map(BillModel.fromFirestore).toList();
+          list.sort((a, b) => a.dueDate.compareTo(b.dueDate));
+          return list;
+        });
   }
 
   static Future<String> addBill(BillModel bill) async {
@@ -212,14 +215,16 @@ class DbService {
           .snapshots()
           .map((s) => s.docs.map(TransactionModel.fromFirestore).toList());
 
-  /// Stream of upcoming unpaid bills (for home page)
+  /// Stream of upcoming unpaid bills (for home page) — sorted in-app
   static Stream<List<BillModel>> watchUpcomingBills({int limit = 3}) =>
       _col('bills')
           .where('isPaid', isEqualTo: false)
-          .orderBy('dueDate')
-          .limit(limit)
           .snapshots()
-          .map((s) => s.docs.map(BillModel.fromFirestore).toList());
+          .map((s) {
+            final list = s.docs.map(BillModel.fromFirestore).toList();
+            list.sort((a, b) => a.dueDate.compareTo(b.dueDate));
+            return list.take(limit).toList();
+          });
 
   // ── Month string helper ────────────────────────────────────────────────────
   static String monthKey(DateTime dt) =>

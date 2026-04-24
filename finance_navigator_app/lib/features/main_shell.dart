@@ -8,21 +8,15 @@ import 'transactions/transactions_page.dart';
 import 'calendar/calendar_page.dart';
 import 'profile/profile_page.dart';
 
-// ─────────────────────────────────────────────
-//  MainShell
-//
-//  Single Scaffold that owns:
-//    • The page content via IndexedStack
-//    • The nav bar via Scaffold.bottomNavigationBar
-//
-//  Using bottomNavigationBar is the ONLY Flutter-
-//  guaranteed way to show a bar regardless of what
-//  child widgets do. Child pages each have their own
-//  Scaffold but Flutter renders the outermost one's
-//  bottomNavigationBar on top of everything.
-// ─────────────────────────────────────────────
+// ── Global tab switcher — any page can call this ──────────────────────────────
+// e.g. MainShell.switchTab(AppTab.calendar)
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
+
+  // Static reference so child pages can switch tabs without context
+  static _MainShellState? _instance;
+  static void switchTab(int tab) => _instance?.switchTo(tab);
+
   @override
   State<MainShell> createState() => _MainShellState();
 }
@@ -31,14 +25,24 @@ class _MainShellState extends State<MainShell> {
   int _tab = AppTab.home;
 
   @override
-  Widget build(BuildContext context) {
-    // Make the status bar icons light (white) on dark background
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+  void initState() {
+    super.initState();
+    MainShell._instance = this;
+  }
 
+  @override
+  void dispose() {
+    if (MainShell._instance == this) MainShell._instance = null;
+    super.dispose();
+  }
+
+  void switchTo(int tab) => setState(() => _tab = tab);
+
+  @override
+  Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-
-      // ── Pages ─────────────────────────────────────────
       body: IndexedStack(
         index: _tab,
         children: const [
@@ -49,10 +53,6 @@ class _MainShellState extends State<MainShell> {
           ProfilePage(),
         ],
       ),
-
-      // ── Nav bar — ALWAYS renders here ────────────────
-      // Flutter draws bottomNavigationBar outside the body,
-      // so it is immune to anything child Scaffolds do.
       bottomNavigationBar: GlassNavBar(
         currentIndex: _tab,
         onTap: (i) => setState(() => _tab = i),
