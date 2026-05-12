@@ -65,7 +65,7 @@ class _CalendarPageState extends State<CalendarPage> {
 
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text('Bill Calendar', style: AppText.h2.copyWith(color: AppColors.onDark)),
+                  Text('Bill Calendar', style: AppText.h2.copyWith(color: context.textColor)),
                   const SizedBox(height: 2),
                   Text('Tap a bill to view or edit',
                     style: AppText.caption.copyWith(fontSize: 11)),
@@ -97,7 +97,7 @@ class _CalendarPageState extends State<CalendarPage> {
                       decoration: BoxDecoration(color: AppColors.glassWhite,
                         border: Border.all(color: AppColors.glassBorder),
                         borderRadius: BorderRadius.circular(Rd.sm)),
-                      child: const Icon(Icons.chevron_left, color: AppColors.onDark, size: 18))),
+                      child: Icon(Icons.chevron_left, color: context.textColor, size: 18))),
                   Text('$monthName ${_focusedMonth.year}',
                     style: AppText.body.copyWith(fontWeight: FontWeight.w700, fontSize: 15)),
                   GestureDetector(onTap: _nextMonth,
@@ -105,13 +105,13 @@ class _CalendarPageState extends State<CalendarPage> {
                       decoration: BoxDecoration(color: AppColors.glassWhite,
                         border: Border.all(color: AppColors.glassBorder),
                         borderRadius: BorderRadius.circular(Rd.sm)),
-                      child: const Icon(Icons.chevron_right, color: AppColors.onDark, size: 18))),
+                      child: Icon(Icons.chevron_right, color: context.textColor, size: 18))),
                 ]),
                 const SizedBox(height: Sp.lg),
                 Row(children: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map((d) =>
                   Expanded(child: Center(child: Text(d, style: AppText.caption.copyWith(
                     fontSize: 10, fontWeight: FontWeight.w600,
-                    color: AppColors.onDark.withOpacity(0.40)))))).toList()),
+                    color: context.textColor.withOpacity(0.40)))))).toList()),
                 const SizedBox(height: Sp.sm),
                 _buildGrid(billsByDay),
                 const SizedBox(height: Sp.md),
@@ -156,10 +156,10 @@ class _CalendarPageState extends State<CalendarPage> {
                 GlassCard(padding: const EdgeInsets.all(Sp.xl),
                   child: Column(children: [
                     Icon(Icons.calendar_month_outlined,
-                      color: AppColors.onDark.withOpacity(0.20), size: 48),
+                      color: context.textColor.withOpacity(0.20), size: 48),
                     const SizedBox(height: Sp.md),
                     Text('No bills this month',
-                      style: AppText.body.copyWith(color: AppColors.onDark.withOpacity(0.45))),
+                      style: AppText.body.copyWith(color: context.textColor.withOpacity(0.45))),
                     const SizedBox(height: Sp.sm),
                     Text('Tap + to add a bill',
                       style: AppText.caption.copyWith(fontSize: 12)),
@@ -211,7 +211,7 @@ class _CalendarPageState extends State<CalendarPage> {
                 fontWeight: (isToday || isSelected) ? FontWeight.w700 : FontWeight.w400,
                 color: isToday ? AppColors.primaryDark
                     : isSelected ? AppColors.accent
-                    : AppColors.onDark.withOpacity(0.65))),
+                    : context.textColor.withOpacity(0.65))),
               if (dayBills.isNotEmpty) Positioned(bottom: 3, child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -261,7 +261,7 @@ class _BillTile extends StatelessWidget {
         const SizedBox(width: Sp.sm),
         Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
           Text(bill.formattedAmount, style: AppText.body.copyWith(fontWeight: FontWeight.w700,
-            color: bill.isPaid ? AppColors.onDark.withOpacity(0.45) : AppColors.onDark)),
+            color: bill.isPaid ? context.textColor.withOpacity(0.45) : context.textColor)),
           const SizedBox(height: 4),
           GestureDetector(
             onTap: () => DbService.markBillPaid(bill.id, !bill.isPaid),
@@ -276,7 +276,7 @@ class _BillTile extends StatelessWidget {
                   fontSize: 10, fontWeight: FontWeight.w700)))),
         ]),
         const SizedBox(width: 6),
-        Icon(Icons.chevron_right_rounded, color: AppColors.onDark.withOpacity(0.25), size: 18),
+        Icon(Icons.chevron_right_rounded, color: context.textColor.withOpacity(0.25), size: 18),
       ])));
   }
 }

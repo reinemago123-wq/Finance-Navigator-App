@@ -10,6 +10,7 @@ class AppColors {
   static const Color accent         = Color(0xFFF4B942);
   static const Color accentLight    = Color(0xFFFFD07A);
   static const Color accentDark     = Color(0xFFE8A830);
+  static const Color muted          = Color(0xFF8899BB);
 
   // Semantic
   static const Color income         = Color(0xFF2ECC71);
@@ -26,39 +27,35 @@ class AppColors {
   static const Color onDark         = Color(0xFFFFFFFF);
 
   // Glassmorphism
-  static const Color glassWhite     = Color(0x0FFFFFFF);   // 6% white
-  static const Color glassBorder    = Color(0x1FFFFFFF);   // 12% white
-  static const Color glassGold      = Color(0x1AF4B942);   // 10% gold
-  static const Color glassGoldBorder= Color(0x40F4B942);   // 25% gold
+  static const Color glassWhite     = Color(0x0FFFFFFF);
+  static const Color glassBorder    = Color(0x1FFFFFFF);
+  static const Color glassGold      = Color(0x1AF4B942);
+  static const Color glassGoldBorder= Color(0x40F4B942);
 }
 
 // ─── Text Styles ──────────────────────────────────────────────────────────────
+// Colors are intentionally NULL here — inherited from ThemeData.textTheme
+// so they automatically switch between dark and light mode.
+// Use .copyWith(color: ...) when you need a specific color override.
 
 class AppText {
   static const TextStyle display = TextStyle(
-    fontSize: 32, fontWeight: FontWeight.w800,
-    color: AppColors.onDark, letterSpacing: -1.0,
+    fontSize: 32, fontWeight: FontWeight.w800, letterSpacing: -1.0,
   );
   static const TextStyle h1 = TextStyle(
-    fontSize: 26, fontWeight: FontWeight.w700,
-    color: AppColors.onDark, letterSpacing: -0.5,
+    fontSize: 26, fontWeight: FontWeight.w700, letterSpacing: -0.5,
   );
   static const TextStyle h2 = TextStyle(
-    fontSize: 22, fontWeight: FontWeight.w700,
-    color: AppColors.onDark, letterSpacing: -0.3,
+    fontSize: 22, fontWeight: FontWeight.w700, letterSpacing: -0.3,
   );
   static const TextStyle h3 = TextStyle(
     fontSize: 18, fontWeight: FontWeight.w600,
-    color: AppColors.onDark,
   );
   static const TextStyle body = TextStyle(
     fontSize: 14, fontWeight: FontWeight.w400,
-    color: AppColors.onDark,
   );
   static const TextStyle bodyMuted = TextStyle(
-    fontSize: 13, fontWeight: FontWeight.w400,
-    color: Color(0x80FFFFFF),  // 50% white
-    height: 1.6,
+    fontSize: 13, fontWeight: FontWeight.w400, height: 1.6,
   );
   static const TextStyle label = TextStyle(
     fontSize: 10, fontWeight: FontWeight.w600,
@@ -66,15 +63,12 @@ class AppText {
   );
   static const TextStyle caption = TextStyle(
     fontSize: 11, fontWeight: FontWeight.w400,
-    color: Color(0x60FFFFFF),
   );
   static const TextStyle money = TextStyle(
-    fontSize: 22, fontWeight: FontWeight.w700,
-    color: AppColors.onDark, letterSpacing: -0.5,
+    fontSize: 22, fontWeight: FontWeight.w700, letterSpacing: -0.5,
   );
   static const TextStyle moneyLarge = TextStyle(
-    fontSize: 28, fontWeight: FontWeight.w800,
-    color: AppColors.onDark, letterSpacing: -1.0,
+    fontSize: 28, fontWeight: FontWeight.w800, letterSpacing: -1.0,
   );
 }
 
@@ -111,7 +105,6 @@ class AppGradients {
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [Color(0xFF0D2347), Color(0xFF091525)],
-    stops: [0.0, 1.0],
   );
 
   static const LinearGradient accent = LinearGradient(
@@ -133,26 +126,20 @@ class AppShadows {
   static List<BoxShadow> get goldGlow => [
     BoxShadow(
       color: AppColors.accent.withOpacity(0.30),
-      blurRadius: 24,
-      spreadRadius: 0,
-      offset: const Offset(0, 8),
-    ),
+      blurRadius: 24, spreadRadius: 0, offset: const Offset(0, 8)),
   ];
 
   static List<BoxShadow> get card => [
     BoxShadow(
       color: Colors.black.withOpacity(0.20),
-      blurRadius: 20,
-      spreadRadius: 0,
-      offset: const Offset(0, 8),
-    ),
+      blurRadius: 20, spreadRadius: 0, offset: const Offset(0, 8)),
   ];
 }
 
 // ─── ThemeData ─────────────────────────────────────────────────────────────────
 
 class AppTheme {
-  // ── Dark ────────────────────────────────────────────────────────────────────
+  // ── Dark ──────────────────────────────────────────────────────────────────
   static ThemeData get dark => ThemeData(
     brightness: Brightness.dark,
     useMaterial3: true,
@@ -163,15 +150,17 @@ class AppTheme {
       surface:   AppColors.primary,
     ),
     appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
+      backgroundColor: Colors.transparent, elevation: 0,
+      titleTextStyle: TextStyle(color: AppColors.onDark, fontSize: 18, fontWeight: FontWeight.w700),
+      iconTheme: IconThemeData(color: AppColors.onDark),
     ),
-    textTheme: _textTheme(AppColors.onDark),
+    textTheme: _buildTextTheme(AppColors.onDark),
     inputDecorationTheme: _inputTheme(AppColors.onDark),
     dividerColor: AppColors.glassBorder,
+    iconTheme: const IconThemeData(color: AppColors.onDark),
   );
 
-  // ── Light ───────────────────────────────────────────────────────────────────
+  // ── Light ──────────────────────────────────────────────────────────────────
   static ThemeData get light => ThemeData(
     brightness: Brightness.light,
     useMaterial3: true,
@@ -182,57 +171,70 @@ class AppTheme {
       surface:   Colors.white,
     ),
     appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
+      backgroundColor: Colors.transparent, elevation: 0,
+      titleTextStyle: TextStyle(color: AppColors.primary, fontSize: 18, fontWeight: FontWeight.w700),
       iconTheme: IconThemeData(color: AppColors.primary),
     ),
-    textTheme: _textTheme(AppColors.primary),
+    textTheme: _buildTextTheme(AppColors.primary),
     inputDecorationTheme: _inputTheme(AppColors.primary),
-    dividerColor: Color(0xFFE0E7F0),
+    dividerColor: const Color(0xFFE0E7F0),
+    iconTheme: const IconThemeData(color: AppColors.primary),
   );
 
-  static TextTheme _textTheme(Color base) => TextTheme(
-    displayLarge: TextStyle(color: base),
-    bodyLarge:    TextStyle(color: base),
-    bodyMedium:   TextStyle(color: base),
+  // Full text theme so every AppText style inherits the right color
+  static TextTheme _buildTextTheme(Color base) => TextTheme(
+    displayLarge:  TextStyle(color: base, fontSize: 32, fontWeight: FontWeight.w800, letterSpacing: -1.0),
+    displayMedium: TextStyle(color: base, fontSize: 26, fontWeight: FontWeight.w700, letterSpacing: -0.5),
+    displaySmall:  TextStyle(color: base, fontSize: 22, fontWeight: FontWeight.w700, letterSpacing: -0.3),
+    headlineMedium:TextStyle(color: base, fontSize: 18, fontWeight: FontWeight.w600),
+    headlineSmall: TextStyle(color: base, fontSize: 16, fontWeight: FontWeight.w600),
+    titleLarge:    TextStyle(color: base, fontSize: 14, fontWeight: FontWeight.w600),
+    titleMedium:   TextStyle(color: base, fontSize: 13, fontWeight: FontWeight.w500),
+    titleSmall:    TextStyle(color: base, fontSize: 12, fontWeight: FontWeight.w500),
+    bodyLarge:     TextStyle(color: base, fontSize: 14, fontWeight: FontWeight.w400),
+    bodyMedium:    TextStyle(color: base, fontSize: 13, fontWeight: FontWeight.w400),
+    bodySmall:     TextStyle(color: base.withOpacity(0.65), fontSize: 11, fontWeight: FontWeight.w400),
+    labelLarge:    TextStyle(color: base, fontSize: 12, fontWeight: FontWeight.w600),
+    labelSmall:    TextStyle(color: base.withOpacity(0.55), fontSize: 10, fontWeight: FontWeight.w500, letterSpacing: 0.5),
   );
 
-  static InputDecorationTheme _inputTheme(Color base) =>
-      InputDecorationTheme(
-        hintStyle: TextStyle(color: base.withOpacity(0.40)),
-        border: InputBorder.none,
-      );
+  static InputDecorationTheme _inputTheme(Color base) => InputDecorationTheme(
+    hintStyle: TextStyle(color: base.withOpacity(0.40)),
+    border: InputBorder.none,
+  );
 }
 
-// ─── Context helpers ───────────────────────────────────────────────────────────
-// Use these in widgets instead of hardcoded AppColors.onDark / AppColors.primaryDark
+// ─── Context helpers ──────────────────────────────────────────────────────────
 
 extension AppThemeContext on BuildContext {
-  bool   get isDark        => Theme.of(this).brightness == Brightness.dark;
+  bool   get isDark      => Theme.of(this).brightness == Brightness.dark;
 
-  // Text colour — white in dark, navy in light
-  Color  get textColor     => isDark ? AppColors.onDark  : AppColors.primary;
+  // Primary text colour — auto switches
+  Color  get textColor   => isDark ? AppColors.onDark : AppColors.primary;
 
-  // Subtle text
-  Color  get textMuted     => textColor.withOpacity(0.55);
+  // Muted text
+  Color  get textMuted   => textColor.withOpacity(0.55);
 
-  // Card / glass fill
-  Color  get glassFill     => isDark
+  // Caption / hint
+  Color  get textCaption => textColor.withOpacity(0.45);
+
+  // Card glass fill
+  Color  get glassFill   => isDark
       ? const Color(0x0FFFFFFF)   // 6% white
-      : const Color(0x99FFFFFF);  // 60% white
+      : const Color(0xCCFFFFFF);  // 80% white
 
   // Card border
   Color  get glassBorderColor => isDark
-      ? const Color(0x1FFFFFFF)   // 12% white
-      : const Color(0xFFDDE5F0);  // light blue-grey
+      ? const Color(0x1FFFFFFF)
+      : const Color(0xFFDDE5F0);
 
   // Page background
-  Color  get bgColor       => isDark
+  Color  get bgColor     => isDark
       ? AppColors.primaryDark
       : const Color(0xFFF0F4FF);
 
-  // Orb / glow tint
-  Color  get orbTint       => isDark
+  // Orb tint
+  Color  get orbTint     => isDark
       ? AppColors.accent.withOpacity(0.15)
       : AppColors.accent.withOpacity(0.08);
 }

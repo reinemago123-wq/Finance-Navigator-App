@@ -23,7 +23,7 @@ class _BudgetPageState extends State<BudgetPage> {
     'Health':           (Icons.health_and_safety_outlined, const Color(0xFF00B894)),
     'Education':        (Icons.school_outlined,        const Color(0xFF4A9EE8)),
     'Travel':           (Icons.flight_outlined,        AppColors.accent),
-    'Other':            (Icons.category_outlined,      AppColors.onDark.withValues(alpha: 0.5)),
+    'Other':            (Icons.category_outlined,      AppColors.muted),
   };
 
   void _showEditBudget(BuildContext ctx, BudgetModel? existing, String category) {
@@ -39,7 +39,7 @@ class _BudgetPageState extends State<BudgetPage> {
             border: Border.all(color: AppColors.glassBorder)),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             Container(width: 40, height: 4, decoration: BoxDecoration(
-              color: AppColors.onDark.withOpacity(0.18), borderRadius: BorderRadius.circular(2))),
+              color: context.textColor.withOpacity(0.18), borderRadius: BorderRadius.circular(2))),
             const SizedBox(height: Sp.lg),
             Row(children: [
               Text('Set budget for $category', style: AppText.h3),
@@ -54,13 +54,13 @@ class _BudgetPageState extends State<BudgetPage> {
               child: Row(children: [
                 Icon(Icons.attach_money_rounded, color: AppColors.accent.withOpacity(0.65), size: 20),
                 const SizedBox(width: 8),
-                Text('\$', style: AppText.body.copyWith(color: AppColors.onDark.withOpacity(0.50))),
+                Text('\$', style: AppText.body.copyWith(color: context.textColor.withOpacity(0.50))),
                 const SizedBox(width: 4),
                 Expanded(child: TextField(controller: ctrl, autofocus: true,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   style: AppText.body.copyWith(fontSize: 14),
                   decoration: InputDecoration(hintText: 'Monthly limit',
-                    hintStyle: AppText.body.copyWith(color: AppColors.onDark.withOpacity(0.28), fontSize: 14),
+                    hintStyle: AppText.body.copyWith(color: context.textColor.withOpacity(0.28), fontSize: 14),
                     border: InputBorder.none, contentPadding: EdgeInsets.zero))),
               ])),
             const SizedBox(height: Sp.xl),
@@ -119,7 +119,7 @@ class _BudgetPageState extends State<BudgetPage> {
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
                   Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                    Text('Budget', style: AppText.h2.copyWith(color: AppColors.onDark)),
+                    Text('Budget', style: AppText.h2.copyWith(color: context.textColor)),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                       decoration: BoxDecoration(color: AppColors.accent.withOpacity(0.14),
@@ -155,7 +155,7 @@ class _BudgetPageState extends State<BudgetPage> {
                         child: LinearProgressIndicator(
                           value: totalLimit > 0 ? (totalSpent / totalLimit).clamp(0.0, 1.0) : 0,
                           minHeight: 8,
-                          backgroundColor: AppColors.onDark.withOpacity(0.08),
+                          backgroundColor: context.textColor.withOpacity(0.08),
                           valueColor: AlwaysStoppedAnimation<Color>(
                             totalSpent > totalLimit ? AppColors.expense : AppColors.income))),
                       const SizedBox(height: 6),
@@ -204,10 +204,10 @@ class _BudgetPageState extends State<BudgetPage> {
                   if (budgets.isEmpty && spentMap.isEmpty)
                     GlassCard(padding: const EdgeInsets.all(Sp.xl), child: Column(children: [
                       Icon(Icons.pie_chart_outline_rounded,
-                        color: AppColors.onDark.withOpacity(0.20), size: 56),
+                        color: context.textColor.withOpacity(0.20), size: 56),
                       const SizedBox(height: Sp.md),
                       Text('No budgets set yet',
-                        style: AppText.body.copyWith(color: AppColors.onDark.withOpacity(0.45))),
+                        style: AppText.body.copyWith(color: context.textColor.withOpacity(0.45))),
                       const SizedBox(height: Sp.sm),
                       Text('Tap a category to set a monthly limit',
                         style: AppText.caption.copyWith(fontSize: 12)),
@@ -235,7 +235,7 @@ class _BudgetPageState extends State<BudgetPage> {
       final limit  = budget?.limit ?? 0;
       final pct    = limit > 0 ? (spent / limit).clamp(0.0, 1.0) : 0.0;
       final isOver = limit > 0 && spent > limit;
-      final meta = _categoryMeta[cat] ?? (Icons.category_outlined, AppColors.onDark.withValues(alpha: 0.5));
+      final meta   = _categoryMeta[cat] ?? (Icons.category_outlined, AppColors.muted);
       final color  = isOver ? AppColors.expense : meta.$2;
 
       return Padding(padding: const EdgeInsets.only(bottom: Sp.sm),
@@ -257,7 +257,7 @@ class _BudgetPageState extends State<BudgetPage> {
                 ])),
                 Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
                   Text('\$${spent.toInt()}', style: TextStyle(
-                    color: isOver ? AppColors.expense : AppColors.onDark,
+                    color: isOver ? AppColors.expense : context.textColor,
                     fontSize: 13, fontWeight: FontWeight.w700)),
                   Text(limit > 0 ? 'of \$${limit.toInt()}' : 'no limit',
                     style: AppText.caption.copyWith(fontSize: 10)),
@@ -267,14 +267,14 @@ class _BudgetPageState extends State<BudgetPage> {
                 const SizedBox(height: 10),
                 ClipRRect(borderRadius: BorderRadius.circular(3),
                   child: LinearProgressIndicator(value: pct, minHeight: 5,
-                    backgroundColor: AppColors.onDark.withOpacity(0.08),
+                    backgroundColor: context.textColor.withOpacity(0.08),
                     valueColor: AlwaysStoppedAnimation<Color>(color))),
                 const SizedBox(height: 5),
                 Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                   Text(isOver
                     ? '\$${(spent - limit).toInt()} over budget'
                     : '\$${(limit - spent).toInt()} left',
-                    style: TextStyle(color: isOver ? AppColors.expense : AppColors.onDark.withOpacity(0.40),
+                    style: TextStyle(color: isOver ? AppColors.expense : context.textColor.withOpacity(0.40),
                       fontSize: 10, fontWeight: FontWeight.w500)),
                 ]),
               ],

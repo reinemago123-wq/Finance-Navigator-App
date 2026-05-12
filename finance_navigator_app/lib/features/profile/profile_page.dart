@@ -4,6 +4,8 @@ import '../../core/theme.dart';
 import '../../core/theme_provider.dart';
 import '../../widgets/glass_card.dart';
 import '../services/user_service.dart';
+import '../../services/db_service.dart';
+import '../../models/models.dart';
 import '../auth/login_page.dart';
 import '../../main.dart';
 
@@ -46,7 +48,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('Profile',
-                      style: AppText.h2.copyWith(color: AppColors.onDark)),
+                      style: AppText.h2.copyWith(color: context.textColor)),
                   GestureDetector(
                     onTap: () => _openEditProfile(context),
                     child: Container(
@@ -88,8 +90,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             color: AppColors.accent.withOpacity(0.35),
                             width: 2),
                       ),
-                      child: const Icon(Icons.person_rounded,
-                          color: AppColors.onDark, size: 52),
+                      child: Icon(Icons.person_rounded,
+                          color: context.textColor, size: 52),
                     ),
                     GestureDetector(
                       onTap: () {},
@@ -114,11 +116,11 @@ class _ProfilePageState extends State<ProfilePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(_name,
-                            style: AppText.h3.copyWith(color: AppColors.onDark)),
+                            style: AppText.h3.copyWith(color: context.textColor)),
                         const SizedBox(height: 4),
                         Text(_email,
                             style: AppText.body.copyWith(
-                                color: AppColors.onDark.withOpacity(0.55),
+                                color: context.textColor.withOpacity(0.55),
                                 fontSize: 13)),
                         const SizedBox(height: Sp.md),
                         Container(
@@ -144,16 +146,31 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               const SizedBox(height: Sp.md),
 
-              // ── Stats row ────────────────────────────────
-              Row(children: [
-                _StatTile(value: '124', label: 'Transactions'),
-                const SizedBox(width: Sp.sm),
-                _StatTile(value: '\$12.4k', label: 'Total Saved',
-                    valueColor: AppColors.accent),
-                const SizedBox(width: Sp.sm),
-                _StatTile(value: '15d', label: 'Streak',
-                    valueColor: AppColors.income),
-              ]),
+              // ── Stats row (live) ─────────────────────────
+              StreamBuilder<List<TransactionModel>>(
+                stream: DbService.watchTransactions(),
+                builder: (ctx, txnSnap) {
+                  return StreamBuilder<List<SavingsGoalModel>>(
+                    stream: DbService.watchGoals(),
+                    builder: (ctx2, goalSnap) {
+                      final txns       = txnSnap.data ?? [];
+                      final goals      = goalSnap.data ?? [];
+                      final txnCount   = txns.length;
+                      final totalSaved = goals.fold(0.0, (s, g) => s + g.saved);
+                      final savedLabel = totalSaved >= 1000
+                          ? '\$${(totalSaved / 1000).toStringAsFixed(1)}k'
+                          : '\$${totalSaved.toInt()}';
+                      return Row(children: [
+                        _StatTile(value: '$txnCount', label: 'Transactions'),
+                        const SizedBox(width: Sp.sm),
+                        _StatTile(value: savedLabel, label: 'Total Saved',
+                            valueColor: AppColors.accent),
+                        const SizedBox(width: Sp.sm),
+                        _StatTile(value: '${goals.length}', label: 'Goals',
+                            valueColor: AppColors.income),
+                      ]);
+                    });
+                }),
               const SizedBox(height: Sp.xl),
 
               // ── Account ──────────────────────────────────
@@ -254,7 +271,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _sectionLabel(String text) => Text(text,
       style: AppText.caption.copyWith(
-          color: AppColors.onDark.withOpacity(0.40),
+          color: context.textColor.withOpacity(0.40),
           letterSpacing: 0.8,
           fontSize: 11));
 
@@ -281,7 +298,7 @@ class _ProfilePageState extends State<ProfilePage> {
             Container(
               width: 40, height: 4,
               decoration: BoxDecoration(
-                  color: AppColors.onDark.withOpacity(0.18),
+                  color: context.textColor.withOpacity(0.18),
                   borderRadius: BorderRadius.circular(2)),
             ),
             const SizedBox(height: Sp.md),
@@ -339,7 +356,7 @@ class _ProfilePageState extends State<ProfilePage> {
             Container(
               width: 40, height: 4,
               decoration: BoxDecoration(
-                  color: AppColors.onDark.withOpacity(0.18),
+                  color: context.textColor.withOpacity(0.18),
                   borderRadius: BorderRadius.circular(2)),
             ),
             const SizedBox(height: Sp.md),
@@ -384,7 +401,7 @@ class _ProfilePageState extends State<ProfilePage> {
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: AppText.body.copyWith(
-                color: AppColors.onDark.withOpacity(0.28), fontSize: 13),
+                color: context.textColor.withOpacity(0.28), fontSize: 13),
             border: InputBorder.none,
             contentPadding: EdgeInsets.zero,
           ),
@@ -428,7 +445,7 @@ class _StatTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(Rd.md),
         child: Column(children: [
           Text(value, style: TextStyle(
-              color: valueColor ?? AppColors.onDark,
+              color: valueColor ?? context.textColor,
               fontSize: 18, fontWeight: FontWeight.w800)),
           const SizedBox(height: 4),
           Text(label,
@@ -474,7 +491,7 @@ class _SettingsRow extends StatelessWidget {
               style: AppText.body.copyWith(
                   fontSize: 14, fontWeight: FontWeight.w500))),
           trailing ?? Icon(Icons.chevron_right_rounded,
-              color: AppColors.onDark.withOpacity(0.25), size: 20),
+              color: context.textColor.withOpacity(0.25), size: 20),
         ]),
       ),
     );
@@ -521,11 +538,11 @@ class _ToggleState extends State<_Toggle> {
         decoration: BoxDecoration(
           color: _on
               ? AppColors.income.withOpacity(0.28)
-              : AppColors.onDark.withOpacity(0.10),
+              : context.textColor.withOpacity(0.10),
           border: Border.all(
               color: _on
                   ? AppColors.income.withOpacity(0.45)
-                  : AppColors.onDark.withOpacity(0.15)),
+                  : context.textColor.withOpacity(0.15)),
           borderRadius: BorderRadius.circular(12),
         ),
         child: AnimatedAlign(
@@ -537,7 +554,7 @@ class _ToggleState extends State<_Toggle> {
             decoration: BoxDecoration(
               color: _on
                   ? AppColors.income
-                  : AppColors.onDark.withOpacity(0.35),
+                  : context.textColor.withOpacity(0.35),
               shape: BoxShape.circle,
             ),
           ),

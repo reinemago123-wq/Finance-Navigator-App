@@ -11,7 +11,7 @@ class _OnboardPage {
   final String tag;
   final String title;
   final String description;
-  final Color orbColor; 
+  final Color orbColor;
   final Widget illustration;
 
   const _OnboardPage({
@@ -181,7 +181,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                         child: Text(
                           'Skip',
                           style: AppText.body.copyWith(
-                            color: AppColors.onDark.withOpacity(0.45),
+                            color: context.textColor.withOpacity(0.45),
                             fontSize: 13,
                           ),
                         ),
@@ -278,7 +278,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                                   decoration: BoxDecoration(
                                     color: isActive
                                         ? AppColors.accent
-                                        : AppColors.onDark.withOpacity(0.20),
+                                        : context.textColor.withOpacity(0.20),
                                     borderRadius: BorderRadius.circular(3),
                                   ),
                                 );
@@ -519,7 +519,7 @@ class _TxnRow extends StatelessWidget {
               Text(name,
                   style: AppText.body.copyWith(
                       fontSize: 10,
-                      color: AppColors.onDark.withOpacity(0.85))),
+                      color: context.textColor.withOpacity(0.85))),
               Text(cat,
                   style: AppText.caption.copyWith(fontSize: 9)),
             ],
@@ -691,7 +691,7 @@ class _MiniCalendar extends StatelessWidget {
                               fontSize: 8,
                               color: isToday
                                   ? AppColors.primaryDark
-                                  : AppColors.onDark.withOpacity(0.5),
+                                  : context.textColor.withOpacity(0.5),
                               fontWeight: isToday
                                   ? FontWeight.w700
                                   : FontWeight.w400,
@@ -759,7 +759,7 @@ class _BillRow extends StatelessWidget {
                   style: AppText.body.copyWith(
                       fontSize: 10,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.onDark.withOpacity(0.85))),
+                      color: context.textColor.withOpacity(0.85))),
               Text(sub, style: AppText.caption.copyWith(fontSize: 9)),
             ],
           ),

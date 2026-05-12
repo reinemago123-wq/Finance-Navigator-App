@@ -193,9 +193,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             ),
                             borderRadius: BorderRadius.circular(Rd.lg),
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.arrow_back_ios_new,
-                            color: AppColors.onDark,
+                            color: context.textColor,
                             size: 18,
                           ),
                         ),
@@ -209,7 +209,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     Text(
                       'Start your financial journey today',
                       style: AppText.body.copyWith(
-                        color: AppColors.onDark.withOpacity(0.60),
+                        color: context.textColor.withOpacity(0.60),
                       ),
                     ),
                     const SizedBox(height: Sp.xl),
@@ -276,7 +276,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       child: LinearProgressIndicator(
                         value: strength,
                         minHeight: 5,
-                        backgroundColor: AppColors.onDark.withOpacity(0.10),
+                        backgroundColor: context.textColor.withOpacity(0.10),
                         valueColor: AlwaysStoppedAnimation<Color>(
                           _strengthColor(strength),
                         ),
@@ -341,7 +341,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               TextSpan(
                                 text: 'I agree to the ',
                                 style: AppText.caption.copyWith(
-                                  color: AppColors.onDark.withOpacity(0.70),
+                                  color: context.textColor.withOpacity(0.70),
                                 ),
                                 children: [
                                   TextSpan(
@@ -354,7 +354,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                   TextSpan(
                                     text: ' and ',
                                     style: AppText.caption.copyWith(
-                                      color: AppColors.onDark.withOpacity(0.70),
+                                      color: context.textColor.withOpacity(0.70),
                                     ),
                                   ),
                                   TextSpan(
@@ -415,7 +415,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               fontWeight: FontWeight.w700,
                               color: _agreeToTerms
                                   ? AppColors.primaryDark
-                                  : AppColors.onDark.withOpacity(0.40),
+                                  : context.textColor.withOpacity(0.40),
                               letterSpacing: 0.5,
                             ),
                           ),
@@ -433,7 +433,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           text: TextSpan(
                             text: 'Already have an account? ',
                             style: AppText.body.copyWith(
-                              color: AppColors.onDark.withOpacity(0.70),
+                              color: context.textColor.withOpacity(0.70),
                             ),
                             children: [
                               TextSpan(
@@ -465,7 +465,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
     return Text(
       text,
       style: AppText.label.copyWith(
-        color: AppColors.onDark.withOpacity(0.70),
+        color: context.textColor.withOpacity(0.70),
       ),
     );
   }
@@ -490,7 +490,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
             child: TextField(
               controller: controller,
               keyboardType: keyboardType,
-              style: AppText.body.copyWith(color: AppColors.onDark),
+              style: AppText.body.copyWith(color: context.textColor),
               onChanged: (_) { if (_error != null) setState(() => _error = null); },
               decoration: InputDecoration(
                 hintText: hintText,
@@ -532,7 +532,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               controller: controller,
               obscureText: !showPassword,
               onChanged: (_) => setState(() {}), // triggers strength update
-              style: AppText.body.copyWith(color: AppColors.onDark),
+              style: AppText.body.copyWith(color: context.textColor),
               decoration: InputDecoration(
                 hintText: hintText,
                 hintStyle: AppText.body.copyWith(

@@ -140,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
                 const Text('Welcome Back', style: AppText.display),
                 const SizedBox(height: Sp.sm),
                 Text('Sign in to manage your finances',
-                    style: AppText.body.copyWith(color: AppColors.onDark.withOpacity(0.60))),
+                    style: AppText.body.copyWith(color: context.textColor.withOpacity(0.60))),
                 const SizedBox(height: Sp.xl),
 
                 // Error banner
@@ -163,7 +163,7 @@ class _LoginPageState extends State<LoginPage> {
                 ],
 
                 // Email
-                Text('Email', style: AppText.label.copyWith(color: AppColors.onDark.withOpacity(0.70))),
+                Text('Email', style: AppText.label.copyWith(color: context.textColor.withOpacity(0.70))),
                 const SizedBox(height: Sp.sm),
                 _inputField(controller: _emailController, hint: 'you@example.com',
                     icon: Icons.mail_outline, keyboard: TextInputType.emailAddress),
@@ -171,7 +171,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 // Password
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  Text('Password', style: AppText.label.copyWith(color: AppColors.onDark.withOpacity(0.70))),
+                  Text('Password', style: AppText.label.copyWith(color: context.textColor.withOpacity(0.70))),
                   GestureDetector(
                     onTap: _forgotPassword,
                     child: Text('Forgot?', style: AppText.caption.copyWith(color: AppColors.accent)),
@@ -188,7 +188,7 @@ class _LoginPageState extends State<LoginPage> {
                     _checkbox(_rememberMe),
                     const SizedBox(width: Sp.md),
                     Text('Remember me',
-                        style: AppText.body.copyWith(color: AppColors.onDark.withOpacity(0.70))),
+                        style: AppText.body.copyWith(color: context.textColor.withOpacity(0.70))),
                   ]),
                 ),
                 const SizedBox(height: Sp.xl),
@@ -219,11 +219,11 @@ class _LoginPageState extends State<LoginPage> {
 
                 // Divider
                 Row(children: [
-                  Expanded(child: Container(height: 1, color: AppColors.onDark.withOpacity(0.10))),
+                  Expanded(child: Container(height: 1, color: context.textColor.withOpacity(0.10))),
                   Padding(padding: const EdgeInsets.symmetric(horizontal: Sp.md),
                       child: Text('or', style: AppText.caption.copyWith(
-                          color: AppColors.onDark.withOpacity(0.50)))),
-                  Expanded(child: Container(height: 1, color: AppColors.onDark.withOpacity(0.10))),
+                          color: context.textColor.withOpacity(0.50)))),
+                  Expanded(child: Container(height: 1, color: context.textColor.withOpacity(0.10))),
                 ]),
                 const SizedBox(height: Sp.lg),
 
@@ -232,7 +232,7 @@ class _LoginPageState extends State<LoginPage> {
                   onTap: _goToRegister,
                   child: RichText(text: TextSpan(
                     text: "Don't have an account? ",
-                    style: AppText.body.copyWith(color: AppColors.onDark.withOpacity(0.70)),
+                    style: AppText.body.copyWith(color: context.textColor.withOpacity(0.70)),
                     children: [TextSpan(text: 'Create one',
                         style: AppText.body.copyWith(
                             color: AppColors.accent, fontWeight: FontWeight.w600))],
@@ -257,7 +257,7 @@ class _LoginPageState extends State<LoginPage> {
         const SizedBox(width: Sp.md),
         Expanded(child: TextField(
           controller: controller, keyboardType: keyboard,
-          style: AppText.body.copyWith(color: AppColors.onDark),
+          style: AppText.body.copyWith(color: context.textColor),
           onChanged: (_) { if (_error != null) setState(() => _error = null); },
           decoration: InputDecoration(
             hintText: hint,
@@ -277,7 +277,7 @@ class _LoginPageState extends State<LoginPage> {
         const SizedBox(width: Sp.md),
         Expanded(child: TextField(
           controller: _passwordController, obscureText: !_showPassword,
-          style: AppText.body.copyWith(color: AppColors.onDark),
+          style: AppText.body.copyWith(color: context.textColor),
           onChanged: (_) { if (_error != null) setState(() => _error = null); },
           decoration: InputDecoration(
             hintText: 'Enter your password',

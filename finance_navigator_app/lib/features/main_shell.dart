@@ -8,21 +8,26 @@ import 'transactions/transactions_page.dart';
 import 'calendar/calendar_page.dart';
 import 'profile/profile_page.dart';
 
-// ── Global tab switcher — any page can call this ──────────────────────────────
-// e.g. MainShell.switchTab(AppTab.calendar)
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
 
-  // Static reference so child pages can switch tabs without context
   static _MainShellState? _instance;
-  static void switchTab(int tab) => _instance?.switchTo(tab);
+
+  // Persists the active tab across full rebuilds (e.g. theme toggle)
+  static int _persistedTab = AppTab.home;
+
+  static void switchTab(int tab) {
+    _persistedTab = tab;
+    _instance?.switchTo(tab);
+  }
 
   @override
   State<MainShell> createState() => _MainShellState();
 }
 
 class _MainShellState extends State<MainShell> {
-  int _tab = AppTab.home;
+  // Restore from persisted tab so theme toggle doesn't reset to home
+  late int _tab = MainShell._persistedTab;
 
   @override
   void initState() {
@@ -36,11 +41,18 @@ class _MainShellState extends State<MainShell> {
     super.dispose();
   }
 
-  void switchTo(int tab) => setState(() => _tab = tab);
+  void switchTo(int tab) {
+    MainShell._persistedTab = tab;
+    setState(() => _tab = tab);
+  }
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+    // Keep status bar icons visible in both modes
+    SystemChrome.setSystemUIOverlayStyle(
+      context.isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+    );
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: IndexedStack(
@@ -55,7 +67,10 @@ class _MainShellState extends State<MainShell> {
       ),
       bottomNavigationBar: GlassNavBar(
         currentIndex: _tab,
-        onTap: (i) => setState(() => _tab = i),
+        onTap: (i) {
+          MainShell._persistedTab = i;
+          setState(() => _tab = i);
+        },
       ),
     );
   }

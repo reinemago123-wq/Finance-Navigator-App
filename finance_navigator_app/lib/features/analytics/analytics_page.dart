@@ -71,7 +71,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
 
               // ── Header ──────────────────────────────
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Text('Analytics', style: AppText.h2.copyWith(color: AppColors.onDark)),
+                Text('Analytics', style: AppText.h2.copyWith(color: context.textColor)),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                   decoration: BoxDecoration(color: AppColors.glassWhite,
@@ -97,7 +97,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                       border: Border.all(color: active ? AppColors.accent : AppColors.glassBorder),
                       borderRadius: BorderRadius.circular(Rd.full)),
                     child: Text(_periods[i], style: TextStyle(
-                      color: active ? AppColors.primaryDark : AppColors.onDark.withOpacity(0.60),
+                      color: active ? AppColors.primaryDark : context.textColor.withOpacity(0.60),
                       fontSize: 12, fontWeight: FontWeight.w600))));
               })),
               const SizedBox(height: Sp.xl),
@@ -111,19 +111,19 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
               Row(children: [
                 Expanded(child: _SummaryTile(label: 'Total Spent', value: '\$${expense.toStringAsFixed(0)}',
                   sub: txns.where((t) => t.isExpense).length.toString() + ' transactions',
-                  subColor: AppColors.onDark.withOpacity(0.45),
+                  subColor: context.textColor.withOpacity(0.45),
                   icon: Icons.trending_down_rounded, iconColor: AppColors.expense)),
                 const SizedBox(width: Sp.md),
                 Expanded(child: _SummaryTile(label: 'Total Income', value: '\$${income.toStringAsFixed(0)}',
                   sub: txns.where((t) => t.isIncome).length.toString() + ' transactions',
-                  subColor: AppColors.onDark.withOpacity(0.45),
+                  subColor: context.textColor.withOpacity(0.45),
                   icon: Icons.trending_up_rounded, iconColor: AppColors.income)),
               ]),
               const SizedBox(height: Sp.md),
               GlassCard(padding: const EdgeInsets.all(Sp.lg), child: Row(children: [
                 Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text('Net Savings', style: AppText.caption.copyWith(
-                    color: AppColors.onDark.withOpacity(0.60))),
+                    color: context.textColor.withOpacity(0.60))),
                   const SizedBox(height: Sp.xs),
                   Text('\$${net.toStringAsFixed(0)}', style: TextStyle(
                     color: net >= 0 ? AppColors.income : AppColors.expense,
@@ -139,7 +139,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
               const SizedBox(height: Sp.xl),
 
               // ── Bar chart ────────────────────────────
-              Text('Income vs Expenses', style: AppText.h3.copyWith(color: AppColors.onDark)),
+              Text('Income vs Expenses', style: AppText.h3.copyWith(color: context.textColor)),
               const SizedBox(height: Sp.md),
               GlassCard(padding: const EdgeInsets.all(Sp.lg), child: Column(children: [
                 Row(mainAxisAlignment: MainAxisAlignment.end, children: [
@@ -160,7 +160,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
 
               // ── Donut + legend ───────────────────────
               if (cats.isNotEmpty) ...[
-                Text('Spending by Category', style: AppText.h3.copyWith(color: AppColors.onDark)),
+                Text('Spending by Category', style: AppText.h3.copyWith(color: context.textColor)),
                 const SizedBox(height: Sp.md),
                 GlassCard(padding: const EdgeInsets.all(Sp.lg), child: Row(children: [
                   SizedBox(width: 110, height: 110,
@@ -183,14 +183,14 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                           style: AppText.caption.copyWith(fontSize: 11),
                           overflow: TextOverflow.ellipsis)),
                         Text('\$${e.value.value.toInt()}', style: AppText.caption.copyWith(
-                          color: AppColors.onDark.withOpacity(0.70),
+                          color: context.textColor.withOpacity(0.70),
                           fontWeight: FontWeight.w600, fontSize: 11)),
                       ]))).toList())),
                 ])),
                 const SizedBox(height: Sp.xl),
 
                 // ── Category breakdown ───────────────────
-                Text('Category Breakdown', style: AppText.h3.copyWith(color: AppColors.onDark)),
+                Text('Category Breakdown', style: AppText.h3.copyWith(color: context.textColor)),
                 const SizedBox(height: Sp.md),
                 ...cats.asMap().entries.map((e) => Padding(
                   padding: const EdgeInsets.only(bottom: Sp.md),
@@ -200,10 +200,10 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
 
               if (cats.isEmpty && !isLoading)
                 GlassCard(padding: const EdgeInsets.all(Sp.xl), child: Column(children: [
-                  Icon(Icons.analytics_outlined, color: AppColors.onDark.withOpacity(0.20), size: 56),
+                  Icon(Icons.analytics_outlined, color: context.textColor.withOpacity(0.20), size: 56),
                   const SizedBox(height: Sp.md),
                   Text('No data for this period',
-                    style: AppText.body.copyWith(color: AppColors.onDark.withOpacity(0.45))),
+                    style: AppText.body.copyWith(color: context.textColor.withOpacity(0.45))),
                   const SizedBox(height: Sp.sm),
                   Text('Add some transactions to see analytics',
                     style: AppText.caption.copyWith(fontSize: 12)),
@@ -237,7 +237,7 @@ class _SummaryTile extends StatelessWidget {
       Icon(icon, color: iconColor, size: 16),
       const SizedBox(width: 6),
       Text(label, style: AppText.caption.copyWith(
-        color: AppColors.onDark.withOpacity(0.60), fontSize: 10)),
+        color: context.textColor.withOpacity(0.60), fontSize: 10)),
     ]),
     const SizedBox(height: Sp.sm),
     Text(value, style: AppText.h3),
@@ -326,10 +326,10 @@ class _CategoryRow extends StatelessWidget {
         const SizedBox(width: Sp.md),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(name, style: AppText.body.copyWith(
-            color: AppColors.onDark, fontWeight: FontWeight.w500)),
+            color: context.textColor, fontWeight: FontWeight.w500)),
           const SizedBox(height: Sp.xs),
           Text('\$${spent.toInt()} spent', style: AppText.caption.copyWith(
-            color: AppColors.onDark.withOpacity(0.60))),
+            color: context.textColor.withOpacity(0.60))),
         ])),
         Text('${(pct * 100).toInt()}%', style: AppText.body.copyWith(
           color: color, fontWeight: FontWeight.w600)),
@@ -337,7 +337,7 @@ class _CategoryRow extends StatelessWidget {
       const SizedBox(height: Sp.md),
       ClipRRect(borderRadius: BorderRadius.circular(Rd.sm),
         child: LinearProgressIndicator(value: pct.clamp(0.0, 1.0), minHeight: 4,
-          backgroundColor: AppColors.onDark.withOpacity(0.10),
+          backgroundColor: context.textColor.withOpacity(0.10),
           valueColor: AlwaysStoppedAnimation<Color>(color))),
     ]));
   }

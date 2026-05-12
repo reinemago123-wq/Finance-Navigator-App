@@ -73,17 +73,17 @@ class _TransactionsPageState extends State<TransactionsPage> {
             const SizedBox(height: Sp.md),
             GlassCard(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               child: Row(children: [
-                Icon(Icons.search, color: AppColors.onDark.withOpacity(0.35), size: 18),
+                Icon(Icons.search, color: context.textColor.withOpacity(0.35), size: 18),
                 const SizedBox(width: 8),
                 Expanded(child: TextField(controller: _searchCtrl,
                   onChanged: (v) => setState(() => _search = v),
                   style: AppText.body.copyWith(fontSize: 13),
                   decoration: InputDecoration(hintText: 'Search transactions...',
-                    hintStyle: AppText.body.copyWith(color: AppColors.onDark.withOpacity(0.30), fontSize: 13),
+                    hintStyle: AppText.body.copyWith(color: context.textColor.withOpacity(0.30), fontSize: 13),
                     border: InputBorder.none, contentPadding: EdgeInsets.zero))),
                 if (_search.isNotEmpty) GestureDetector(
                   onTap: () { _searchCtrl.clear(); setState(() => _search = ''); },
-                  child: Icon(Icons.close, color: AppColors.onDark.withOpacity(0.40), size: 18)),
+                  child: Icon(Icons.close, color: context.textColor.withOpacity(0.40), size: 18)),
               ])),
             const SizedBox(height: Sp.md),
             SingleChildScrollView(scrollDirection: Axis.horizontal,
@@ -97,7 +97,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                       border: Border.all(color: _filter == f ? AppColors.accent.withOpacity(0.35) : AppColors.glassBorder),
                       borderRadius: Rd.chip),
                     child: Text(f, style: TextStyle(
-                      color: _filter == f ? AppColors.accent : AppColors.onDark.withOpacity(0.45),
+                      color: _filter == f ? AppColors.accent : context.textColor.withOpacity(0.45),
                       fontSize: 11, fontWeight: FontWeight.w600)))),
               )).toList())),
           ])),
@@ -117,10 +117,10 @@ class _TransactionsPageState extends State<TransactionsPage> {
             final filtered = _applyFilter(all);
             if (filtered.isEmpty) {
               return Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
-                Icon(Icons.receipt_long_outlined, color: AppColors.onDark.withOpacity(0.20), size: 56),
+                Icon(Icons.receipt_long_outlined, color: context.textColor.withOpacity(0.20), size: 56),
                 const SizedBox(height: Sp.md),
                 Text(_search.isNotEmpty ? 'No results found' : 'No transactions yet',
-                  style: AppText.body.copyWith(color: AppColors.onDark.withOpacity(0.45))),
+                  style: AppText.body.copyWith(color: context.textColor.withOpacity(0.45))),
                 const SizedBox(height: Sp.sm),
                 Text('Tap + to add your first transaction',
                   style: AppText.caption.copyWith(fontSize: 12)),
@@ -136,7 +136,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                   Padding(padding: const EdgeInsets.symmetric(vertical: 10),
                     child: Text(entry.key, style: AppText.caption.copyWith(
                         letterSpacing: 0.8, fontSize: 10,
-                        color: AppColors.onDark.withOpacity(0.40)))),
+                        color: context.textColor.withOpacity(0.40)))),
                   ...entry.value.map((t) => Padding(
                     padding: const EdgeInsets.only(bottom: 8),
                     child: _TxnCard(txn: t))),

@@ -132,7 +132,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
               GestureDetector(onTap: () => Navigator.of(context).pop(),
                 child: GlassCard(padding: const EdgeInsets.all(10),
                   borderRadius: BorderRadius.circular(Rd.md),
-                  child: const Icon(Icons.chevron_left_rounded, color: AppColors.onDark, size: 22))),
+                  child: Icon(Icons.chevron_left_rounded, color: context.textColor, size: 22))),
               Expanded(child: Center(child: Text(
                 _isEditing ? 'Edit Transaction' : 'Add Transaction', style: AppText.h3))),
               if (_isEditing)
@@ -166,10 +166,10 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                       borderRadius: BorderRadius.circular(Rd.md)),
                     child: Column(children: [
                       Icon(active ? Icons.check_circle : Icons.radio_button_unchecked,
-                        color: active ? t.color : AppColors.onDark.withOpacity(0.35), size: 16),
+                        color: active ? t.color : context.textColor.withOpacity(0.35), size: 16),
                       const SizedBox(height: 4),
                       Text(t.label, style: TextStyle(
-                        color: active ? t.color : AppColors.onDark.withOpacity(0.35),
+                        color: active ? t.color : context.textColor.withOpacity(0.35),
                         fontSize: 10, fontWeight: FontWeight.w600)),
                     ]),
                   ),
@@ -211,7 +211,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                 child: TextField(controller: _titleCtrl, onChanged: (_) => setState(() {}),
                   style: AppText.body.copyWith(fontSize: 13),
                   decoration: InputDecoration(hintText: 'Title',
-                    hintStyle: AppText.body.copyWith(color: AppColors.onDark.withOpacity(0.28), fontSize: 13),
+                    hintStyle: AppText.body.copyWith(color: context.textColor.withOpacity(0.28), fontSize: 13),
                     border: InputBorder.none, contentPadding: EdgeInsets.zero))),
               const SizedBox(height: Sp.sm),
 
@@ -223,7 +223,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                     Icon(Icons.sell_outlined, color: AppColors.accent.withOpacity(0.65), size: 18),
                     const SizedBox(width: 8),
                     Text('Category', style: AppText.body.copyWith(
-                        color: AppColors.onDark.withOpacity(0.6), fontSize: 12)),
+                        color: context.textColor.withOpacity(0.6), fontSize: 12)),
                   ]),
                   const SizedBox(height: Sp.sm),
                   Wrap(spacing: 7, runSpacing: 7,
@@ -240,7 +240,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                                 width: sel ? 1.5 : 1.0),
                             borderRadius: BorderRadius.circular(Rd.full)),
                           child: Text(_categories[i], style: TextStyle(
-                            color: sel ? _type.color : AppColors.onDark.withOpacity(0.55),
+                            color: sel ? _type.color : context.textColor.withOpacity(0.55),
                             fontSize: 11, fontWeight: FontWeight.w600)),
                         ),
                       );
@@ -260,7 +260,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                 child: TextField(controller: _noteCtrl, maxLines: 2,
                   style: AppText.body.copyWith(fontSize: 13),
                   decoration: InputDecoration(hintText: 'Note (optional)',
-                    hintStyle: AppText.body.copyWith(color: AppColors.onDark.withOpacity(0.28), fontSize: 13),
+                    hintStyle: AppText.body.copyWith(color: context.textColor.withOpacity(0.28), fontSize: 13),
                     border: InputBorder.none, contentPadding: EdgeInsets.zero))),
               const SizedBox(height: Sp.md),
 
@@ -270,18 +270,18 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                   AnimatedContainer(duration: const Duration(milliseconds: 200),
                     width: 44, height: 24,
                     decoration: BoxDecoration(
-                      color: _isRecurring ? AppColors.accent.withOpacity(0.28) : AppColors.onDark.withOpacity(0.10),
-                      border: Border.all(color: _isRecurring ? AppColors.accent.withOpacity(0.45) : AppColors.onDark.withOpacity(0.15)),
+                      color: _isRecurring ? AppColors.accent.withOpacity(0.28) : context.textColor.withOpacity(0.10),
+                      border: Border.all(color: _isRecurring ? AppColors.accent.withOpacity(0.45) : context.textColor.withOpacity(0.15)),
                       borderRadius: BorderRadius.circular(12)),
                     child: AnimatedAlign(duration: const Duration(milliseconds: 200),
                       alignment: _isRecurring ? Alignment.centerRight : Alignment.centerLeft,
                       child: Container(width: 18, height: 18, margin: const EdgeInsets.symmetric(horizontal: 2),
                         decoration: BoxDecoration(
-                          color: _isRecurring ? AppColors.accent : AppColors.onDark.withOpacity(0.35),
+                          color: _isRecurring ? AppColors.accent : context.textColor.withOpacity(0.35),
                           shape: BoxShape.circle)))),
                   const SizedBox(width: Sp.md),
                   Text('Recurring transaction', style: AppText.body.copyWith(fontSize: 13,
-                      color: AppColors.onDark.withOpacity(0.70))),
+                      color: context.textColor.withOpacity(0.70))),
                 ])),
               const SizedBox(height: Sp.xl),
 
@@ -293,7 +293,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                     gradient: _canSave ? const LinearGradient(
                         colors: [AppColors.accent, AppColors.accentDark],
                         begin: Alignment.topLeft, end: Alignment.bottomRight) : null,
-                    color: _canSave ? null : AppColors.onDark.withOpacity(0.08),
+                    color: _canSave ? null : context.textColor.withOpacity(0.08),
                     borderRadius: BorderRadius.circular(Rd.lg),
                     boxShadow: _canSave ? AppShadows.goldGlow : null),
                   child: Center(child: _saving
@@ -301,7 +301,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                         child: CircularProgressIndicator(color: AppColors.primaryDark, strokeWidth: 2.5))
                     : Text(_isEditing ? 'Save Changes' : 'Save Transaction',
                         style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700,
-                          color: _canSave ? AppColors.primaryDark : AppColors.onDark.withOpacity(0.30)))))),
+                          color: _canSave ? AppColors.primaryDark : context.textColor.withOpacity(0.30)))))),
               const SizedBox(height: Sp.lg),
             ]),
           )),

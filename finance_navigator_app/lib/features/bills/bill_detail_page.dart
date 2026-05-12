@@ -65,9 +65,9 @@ class _BillDetailPageState extends State<BillDetailPage> {
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.primary,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Rd.xl)),
-        title: const Text('Delete Bill', style: TextStyle(color: AppColors.onDark, fontWeight: FontWeight.w700)),
+        title: Text('Delete Bill', style: TextStyle(color: context.textColor, fontWeight: FontWeight.w700)),
         content: Text('Remove "${_bill.name}" permanently?',
-          style: TextStyle(color: AppColors.onDark.withOpacity(0.70))),
+          style: TextStyle(color: context.textColor.withOpacity(0.70))),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context, false),
             child: const Text('Cancel', style: TextStyle(color: AppColors.accent))),
@@ -136,7 +136,7 @@ class _BillDetailPageState extends State<BillDetailPage> {
               child: Icon(Icons.receipt_outlined, color: _bill.statusColor, size: 26)),
             const SizedBox(width: Sp.md),
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(_bill.name, style: AppText.h3.copyWith(color: AppColors.onDark)),
+              Text(_bill.name, style: AppText.h3.copyWith(color: context.textColor)),
               const SizedBox(height: 3),
               Text(_bill.category, style: AppText.caption.copyWith(fontSize: 12)),
             ])),
@@ -183,11 +183,11 @@ class _BillDetailPageState extends State<BillDetailPage> {
             borderRadius: BorderRadius.circular(Rd.lg)),
           child: Center(child: Row(mainAxisSize: MainAxisSize.min, children: [
             Icon(_bill.isPaid ? Icons.undo_rounded : Icons.check_circle_outline_rounded,
-              color: _bill.isPaid ? AppColors.onDark.withOpacity(0.60) : AppColors.primaryDark, size: 20),
+              color: _bill.isPaid ? context.textColor.withOpacity(0.60) : AppColors.primaryDark, size: 20),
             const SizedBox(width: 8),
             Text(_bill.isPaid ? 'Mark as Unpaid' : 'Mark as Paid',
               style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700,
-                color: _bill.isPaid ? AppColors.onDark.withOpacity(0.60) : AppColors.primaryDark)),
+                color: _bill.isPaid ? context.textColor.withOpacity(0.60) : AppColors.primaryDark)),
           ])))),
     ]);
   }
@@ -215,7 +215,7 @@ class _BillDetailPageState extends State<BillDetailPage> {
             Text('${_bill.dueDate.day}/${_bill.dueDate.month}/${_bill.dueDate.year}',
               style: AppText.body.copyWith(fontSize: 14)),
             const Spacer(),
-            Icon(Icons.edit_calendar_outlined, color: AppColors.onDark.withOpacity(0.30), size: 16),
+            Icon(Icons.edit_calendar_outlined, color: context.textColor.withOpacity(0.30), size: 16),
           ]))),
       const SizedBox(height: Sp.md),
       _formLabel('Frequency'),
@@ -235,7 +235,7 @@ class _BillDetailPageState extends State<BillDetailPage> {
         child: TextField(controller: _noteCtrl, maxLines: 3,
           style: AppText.body.copyWith(fontSize: 13),
           decoration: InputDecoration(hintText: 'Add a note...',
-            hintStyle: AppText.body.copyWith(color: AppColors.onDark.withOpacity(0.28), fontSize: 13),
+            hintStyle: AppText.body.copyWith(color: context.textColor.withOpacity(0.28), fontSize: 13),
             border: InputBorder.none, contentPadding: EdgeInsets.zero))),
       const SizedBox(height: Sp.xl),
       GestureDetector(onTap: (_canSave && !_saving) ? _save : null,
@@ -243,34 +243,34 @@ class _BillDetailPageState extends State<BillDetailPage> {
           decoration: BoxDecoration(
             gradient: _canSave ? const LinearGradient(colors: [AppColors.accent, AppColors.accentDark],
               begin: Alignment.topLeft, end: Alignment.bottomRight) : null,
-            color: _canSave ? null : AppColors.onDark.withOpacity(0.07),
+            color: _canSave ? null : context.textColor.withOpacity(0.07),
             borderRadius: BorderRadius.circular(Rd.lg),
             boxShadow: _canSave ? AppShadows.goldGlow : null),
           child: Center(child: _saving
             ? const CircularProgressIndicator(color: AppColors.primaryDark, strokeWidth: 2.5)
             : Text('Save Bill', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700,
-                color: _canSave ? AppColors.primaryDark : AppColors.onDark.withOpacity(0.30)))))),
+                color: _canSave ? AppColors.primaryDark : context.textColor.withOpacity(0.30)))))),
     ]);
   }
 
   Widget _iconBtn(IconData icon, {Color? color}) => Container(width: 40, height: 40,
     decoration: BoxDecoration(color: AppColors.glassWhite, border: Border.all(color: AppColors.glassBorder),
       borderRadius: BorderRadius.circular(Rd.md)),
-    child: Icon(icon, color: color ?? AppColors.onDark.withOpacity(0.80), size: 20));
+    child: Icon(icon, color: color ?? context.textColor.withOpacity(0.80), size: 20));
 
   Widget _detailRow(IconData icon, String label, String value, {Color? valueColor}) =>
     Padding(padding: const EdgeInsets.symmetric(vertical: 6), child: Row(children: [
       Icon(icon, color: AppColors.accent.withOpacity(0.65), size: 18),
       const SizedBox(width: Sp.md),
       Expanded(child: Text(label, style: AppText.body.copyWith(
-        color: AppColors.onDark.withOpacity(0.55), fontSize: 13))),
+        color: context.textColor.withOpacity(0.55), fontSize: 13))),
       Text(value, style: AppText.body.copyWith(fontWeight: FontWeight.w600, fontSize: 13,
-        color: valueColor ?? AppColors.onDark)),
+        color: valueColor ?? context.textColor)),
     ]));
 
-  Widget _divider() => Divider(height: 1, thickness: 1, color: AppColors.onDark.withOpacity(0.08));
+  Widget _divider() => Divider(height: 1, thickness: 1, color: context.textColor.withOpacity(0.08));
   Widget _formLabel(String text) => Text(text, style: AppText.body.copyWith(
-    color: AppColors.onDark.withOpacity(0.65), fontWeight: FontWeight.w600, fontSize: 13));
+    color: context.textColor.withOpacity(0.65), fontWeight: FontWeight.w600, fontSize: 13));
 
   Widget _textField({required TextEditingController controller, required String hint,
       required IconData icon, TextInputType keyboardType = TextInputType.text,
@@ -283,7 +283,7 @@ class _BillDetailPageState extends State<BillDetailPage> {
           onChanged: (_) => onChanged(),
           style: AppText.body.copyWith(fontSize: 13),
           decoration: InputDecoration(hintText: hint,
-            hintStyle: AppText.body.copyWith(color: AppColors.onDark.withOpacity(0.28), fontSize: 13),
+            hintStyle: AppText.body.copyWith(color: context.textColor.withOpacity(0.28), fontSize: 13),
             border: InputBorder.none, contentPadding: EdgeInsets.zero))),
       ]));
 }

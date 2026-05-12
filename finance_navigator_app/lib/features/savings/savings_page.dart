@@ -35,7 +35,7 @@ class _SavingsPageState extends State<SavingsPage> {
 
                 // ── Header ──────────────────────────────
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  Text('Savings Goals', style: AppText.h2.copyWith(color: AppColors.onDark)),
+                  Text('Savings Goals', style: AppText.h2.copyWith(color: context.textColor)),
                   GestureDetector(
                     onTap: () => _openSheet(context, null),
                     child: Container(width: 38, height: 38,
@@ -104,7 +104,7 @@ class _EmptyState extends StatelessWidget {
   Widget build(BuildContext context) => GlassCard(
     padding: const EdgeInsets.symmetric(vertical: Sp.xl, horizontal: Sp.lg),
     child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      Icon(Icons.savings_outlined, color: AppColors.onDark.withOpacity(0.20), size: 56),
+      Icon(Icons.savings_outlined, color: context.textColor.withOpacity(0.20), size: 56),
       const SizedBox(height: Sp.md),
       Text('No savings goals yet', style: AppText.h3, textAlign: TextAlign.center),
       const SizedBox(height: Sp.sm),
@@ -139,7 +139,7 @@ class _GoalCard extends StatelessWidget {
         const SizedBox(width: Sp.md),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(goal.name, style: AppText.body.copyWith(
-            fontWeight: FontWeight.w700, fontSize: 15, color: AppColors.onDark)),
+            fontWeight: FontWeight.w700, fontSize: 15, color: context.textColor)),
           const SizedBox(height: 2),
           Text('Target: ${goal.deadlineLabel}',
             style: AppText.caption.copyWith(fontSize: 11)),
@@ -155,19 +155,19 @@ class _GoalCard extends StatelessWidget {
               style: TextStyle(color: goal.color, fontSize: 11, fontWeight: FontWeight.w700))),
           const SizedBox(height: 4),
           Text('tap to edit', style: AppText.caption.copyWith(
-            fontSize: 10, color: AppColors.onDark.withOpacity(0.30))),
+            fontSize: 10, color: context.textColor.withOpacity(0.30))),
         ]),
       ]),
       const SizedBox(height: Sp.md),
       ClipRRect(borderRadius: BorderRadius.circular(4),
         child: LinearProgressIndicator(value: goal.pct, minHeight: 7,
-          backgroundColor: AppColors.onDark.withOpacity(0.08),
+          backgroundColor: context.textColor.withOpacity(0.08),
           valueColor: AlwaysStoppedAnimation<Color>(goal.color))),
       const SizedBox(height: 8),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Text('\$${goal.saved.toInt()} saved',
           style: AppText.body.copyWith(fontSize: 12, fontWeight: FontWeight.w600,
-            color: AppColors.onDark.withOpacity(0.70))),
+            color: context.textColor.withOpacity(0.70))),
         Text('\$${goal.remaining.toInt()} to go',
           style: AppText.caption.copyWith(fontSize: 10)),
       ]),
@@ -252,7 +252,7 @@ class _GoalSheetState extends State<_GoalSheet> {
           border: Border.all(color: AppColors.glassBorder)),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Container(width: 40, height: 4, decoration: BoxDecoration(
-            color: AppColors.onDark.withOpacity(0.18), borderRadius: BorderRadius.circular(2))),
+            color: context.textColor.withOpacity(0.18), borderRadius: BorderRadius.circular(2))),
           const SizedBox(height: Sp.lg),
           Row(children: [
             Text(_isNew ? 'New Goal' : 'Edit Goal', style: AppText.h3),
@@ -281,7 +281,7 @@ class _GoalSheetState extends State<_GoalSheet> {
                 Text('Deadline: ${_deadline.day}/${_deadline.month}/${_deadline.year}',
                   style: AppText.body.copyWith(fontSize: 13)),
                 const Spacer(),
-                Icon(Icons.edit_calendar_outlined, color: AppColors.onDark.withOpacity(0.30), size: 16),
+                Icon(Icons.edit_calendar_outlined, color: context.textColor.withOpacity(0.30), size: 16),
               ]))),
           const SizedBox(height: Sp.xl),
           GestureDetector(onTap: (_canSave && !_saving) ? _save : null,
@@ -289,14 +289,14 @@ class _GoalSheetState extends State<_GoalSheet> {
               height: 52, width: double.infinity,
               decoration: BoxDecoration(
                 gradient: _canSave ? AppGradients.accent : null,
-                color: _canSave ? null : AppColors.onDark.withOpacity(0.07),
+                color: _canSave ? null : context.textColor.withOpacity(0.07),
                 borderRadius: BorderRadius.circular(Rd.lg),
                 boxShadow: _canSave ? AppShadows.goldGlow : null),
               child: Center(child: _saving
                 ? const CircularProgressIndicator(color: AppColors.primaryDark, strokeWidth: 2.5)
                 : Text(_isNew ? 'Create Goal' : 'Save Changes',
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700,
-                      color: _canSave ? AppColors.primaryDark : AppColors.onDark.withOpacity(0.30)))))),
+                      color: _canSave ? AppColors.primaryDark : context.textColor.withOpacity(0.30)))))),
         ])));
   }
 
@@ -308,14 +308,14 @@ class _GoalSheetState extends State<_GoalSheet> {
         Icon(icon, color: AppColors.accent.withOpacity(0.65), size: 18),
         const SizedBox(width: Sp.md),
         if (prefix != null) ...[
-          Text(prefix, style: AppText.body.copyWith(color: AppColors.onDark.withOpacity(0.50))),
+          Text(prefix, style: AppText.body.copyWith(color: context.textColor.withOpacity(0.50))),
           const SizedBox(width: 4),
         ],
         Expanded(child: TextField(controller: ctrl, keyboardType: keyboard,
           onChanged: (_) => onChanged(),
           style: AppText.body.copyWith(fontSize: 14),
           decoration: InputDecoration(hintText: hint,
-            hintStyle: AppText.body.copyWith(color: AppColors.onDark.withOpacity(0.28), fontSize: 14),
+            hintStyle: AppText.body.copyWith(color: context.textColor.withOpacity(0.28), fontSize: 14),
             border: InputBorder.none, contentPadding: EdgeInsets.zero))),
       ]));
 }

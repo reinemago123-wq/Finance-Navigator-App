@@ -40,10 +40,10 @@ class _HomePageState extends State<HomePage> {
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text('Welcome back, ${UserService.firstName}',
-                style: AppText.h2.copyWith(color: AppColors.onDark)),
+                style: AppText.h2.copyWith(color: context.textColor)),
               const SizedBox(height: Sp.xs),
               Text(DateFormat('EEEE, MMM d').format(_now),
-                style: AppText.body.copyWith(color: AppColors.onDark.withOpacity(0.60))),
+                style: AppText.body.copyWith(color: context.textColor.withOpacity(0.60))),
             ]),
             GestureDetector(onTap: () {},
               child: Container(width: 48, height: 48,
@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(height: Sp.xl),
 
           // ── Quick Actions ────────────────────────────────
-          Text('Quick Actions', style: AppText.h3.copyWith(color: AppColors.onDark)),
+          Text('Quick Actions', style: AppText.h3.copyWith(color: context.textColor)),
           const SizedBox(height: Sp.md),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             _QuickBtn(icon: Icons.add_circle_outline, label: 'Income',
@@ -152,7 +152,7 @@ class _SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) => Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      Text(title, style: AppText.h3.copyWith(color: AppColors.onDark)),
+      Text(title, style: AppText.h3.copyWith(color: context.textColor)),
       GestureDetector(onTap: onAction, child: Text(actionLabel,
         style: AppText.caption.copyWith(color: AppColors.accent, fontWeight: FontWeight.w600))),
     ]);
@@ -178,7 +178,7 @@ class _QuickBtn extends StatelessWidget {
           borderRadius: BorderRadius.circular(Rd.lg)),
         child: Icon(icon, color: AppColors.accent, size: 28)),
       const SizedBox(height: Sp.sm),
-      Text(label, style: AppText.caption.copyWith(color: AppColors.onDark.withOpacity(0.70))),
+      Text(label, style: AppText.caption.copyWith(color: context.textColor.withOpacity(0.70))),
     ]));
 }
 
@@ -282,21 +282,21 @@ class _LiveSavingsPreview extends StatelessWidget {
                 const SizedBox(width: Sp.md),
                 Text('Tap to create your first savings goal',
                   style: AppText.body.copyWith(
-                    color: AppColors.onDark.withOpacity(0.55), fontSize: 13)),
+                    color: context.textColor.withOpacity(0.55), fontSize: 13)),
               ])));
         }
         final g = goals.first;
         return GlassCard(padding: const EdgeInsets.all(Sp.lg),
           child: Row(children: [
-          SizedBox(width: 80, height: 80, child: Stack(alignment: Alignment.center, children: [
-            CircularProgressIndicator(value: g.pct, strokeWidth: 7,
-              backgroundColor: AppColors.onDark.withOpacity(0.10),
+          SizedBox(width: 110, height: 110, child: Stack(alignment: Alignment.center, children: [
+            CircularProgressIndicator(value: g.pct, strokeWidth: 8,
+              backgroundColor: context.textColor.withOpacity(0.10),
               valueColor: AlwaysStoppedAnimation<Color>(g.color)),
             Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text('${(g.pct * 100).toInt()}%',
                 style: AppText.h3.copyWith(color: g.color)),
               Text('of goal', style: AppText.caption.copyWith(
-                color: AppColors.onDark.withOpacity(0.60))),
+                color: context.textColor.withOpacity(0.60))),
             ]),
           ])),
           const SizedBox(width: Sp.lg),
@@ -308,7 +308,7 @@ class _LiveSavingsPreview extends StatelessWidget {
             const SizedBox(height: Sp.md),
             ClipRRect(borderRadius: BorderRadius.circular(Rd.sm),
               child: LinearProgressIndicator(value: g.pct, minHeight: 4,
-                backgroundColor: AppColors.onDark.withOpacity(0.10),
+                backgroundColor: context.textColor.withOpacity(0.10),
                 valueColor: AlwaysStoppedAnimation<Color>(g.color))),
             const SizedBox(height: 4),
             Text('${goals.length} goal${goals.length == 1 ? '' : 's'} · \$${goals.fold(0.0, (s, x) => s + x.saved).toInt()} total saved',
@@ -339,10 +339,10 @@ class _LiveBudgetPreview extends StatelessWidget {
             return GlassCard(padding: const EdgeInsets.all(Sp.lg),
               child: Row(children: [
               Icon(Icons.pie_chart_outline_rounded,
-                color: AppColors.onDark.withOpacity(0.25), size: 36),
+                color: context.textColor.withOpacity(0.25), size: 36),
               const SizedBox(width: Sp.md),
               Expanded(child: Text('No budgets set yet.',
-                style: AppText.body.copyWith(color: AppColors.onDark.withOpacity(0.45), fontSize: 13))),
+                style: AppText.body.copyWith(color: context.textColor.withOpacity(0.45), fontSize: 13))),
             ]));
           }
           return Column(children: List.generate(budgets.length, (i) {
@@ -358,12 +358,12 @@ class _LiveBudgetPreview extends StatelessWidget {
                     style: AppText.body.copyWith(fontWeight: FontWeight.w500))),
                   Text('\$${spent.toInt()} / \$${b.limit.toInt()}',
                     style: AppText.caption.copyWith(
-                      color: pct > 0.8 ? AppColors.expense : AppColors.onDark.withOpacity(0.60))),
+                      color: pct > 0.8 ? AppColors.expense : context.textColor.withOpacity(0.60))),
                 ]),
                 const SizedBox(height: Sp.sm),
                 ClipRRect(borderRadius: BorderRadius.circular(Rd.sm),
                   child: LinearProgressIndicator(value: pct, minHeight: 4,
-                    backgroundColor: AppColors.onDark.withOpacity(0.10),
+                    backgroundColor: context.textColor.withOpacity(0.10),
                     valueColor: AlwaysStoppedAnimation<Color>(color))),
               ])));
           }));
@@ -382,10 +382,10 @@ class _LiveRecentTransactions extends StatelessWidget {
         if (txns.isEmpty) {
           return GlassCard(padding: const EdgeInsets.all(Sp.lg),
             child: Row(children: [
-            Icon(Icons.receipt_long_outlined, color: AppColors.onDark.withOpacity(0.25), size: 36),
+            Icon(Icons.receipt_long_outlined, color: context.textColor.withOpacity(0.25), size: 36),
             const SizedBox(width: Sp.md),
             Text('No transactions yet', style: AppText.body.copyWith(
-              color: AppColors.onDark.withOpacity(0.45), fontSize: 13)),
+              color: context.textColor.withOpacity(0.45), fontSize: 13)),
           ]));
         }
         return Column(children: List.generate(txns.length, (i) {
@@ -403,7 +403,7 @@ class _LiveRecentTransactions extends StatelessWidget {
                   maxLines: 1, overflow: TextOverflow.ellipsis),
                 const SizedBox(height: Sp.xs),
                 Text(DateFormat('MMM d').format(t.date),
-                  style: AppText.caption.copyWith(color: AppColors.onDark.withOpacity(0.60))),
+                  style: AppText.caption.copyWith(color: context.textColor.withOpacity(0.60))),
               ])),
               Text(t.formattedAmount, style: AppText.body.copyWith(
                 color: t.isIncome ? AppColors.income : AppColors.expense,
@@ -442,7 +442,7 @@ class _LiveUpcomingBills extends StatelessWidget {
             Icon(Icons.check_circle_outline_rounded, color: AppColors.income.withOpacity(0.50), size: 36),
             const SizedBox(width: Sp.md),
             Text('No upcoming bills — all clear!', style: AppText.body.copyWith(
-              color: AppColors.onDark.withOpacity(0.45), fontSize: 13)),
+              color: context.textColor.withOpacity(0.45), fontSize: 13)),
           ]));
         }
         return Column(children: List.generate(bills.length, (i) {
@@ -464,7 +464,7 @@ class _LiveUpcomingBills extends StatelessWidget {
                   Text(b.name, style: AppText.body.copyWith(fontWeight: FontWeight.w500)),
                   const SizedBox(height: Sp.xs),
                   Text(b.dueDateLabel, style: AppText.caption.copyWith(
-                    color: isUrgent ? AppColors.expense : AppColors.onDark.withOpacity(0.60),
+                    color: isUrgent ? AppColors.expense : context.textColor.withOpacity(0.60),
                     fontWeight: isUrgent ? FontWeight.w600 : null)),
                 ])),
                 Text(b.formattedAmount, style: AppText.body.copyWith(fontWeight: FontWeight.w600)),
