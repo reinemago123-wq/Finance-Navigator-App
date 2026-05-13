@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import '../../core/theme.dart';
 import '../../widgets/glass_card.dart';
 import '../services/user_service.dart';
-import '../../services/db_service.dart';
+import '../../../services/db_service.dart';
 import '../../models/models.dart';
 import '../add_transaction/add_transaction_page.dart';
 import '../main_shell.dart';
@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
               Text(DateFormat('EEEE, MMM d').format(_now),
                 style: AppText.body.copyWith(color: context.textColor.withOpacity(0.60))),
             ]),
-            GestureDetector(onTap: () {},
+            GestureDetector(onTap: () => MainShell.switchTab(AppTab.calendar),
               child: Container(width: 48, height: 48,
                 decoration: BoxDecoration(color: AppColors.glassWhite,
                   border: Border.all(color: AppColors.glassBorder),
